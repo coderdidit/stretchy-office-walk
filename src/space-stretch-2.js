@@ -68,6 +68,10 @@ class SpaceStretch2Game extends Phaser.Scene {
     }
 
     update(time, delta) {
+        this.handlePlayerMoves()
+    }
+
+    handlePlayerMoves() {
         this.player.body.setAngularVelocity(0);
         this.player.body.setVelocity(0, 0);
         this.player.body.setAcceleration(0)
