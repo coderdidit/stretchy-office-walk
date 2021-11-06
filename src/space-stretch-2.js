@@ -94,18 +94,25 @@ const scaleDownSketch = !isMobile
 const config = {
     type: Phaser.AUTO,
     parent: 'main-canvas',
-    // width: scaleDownSketch ? window.innerWidth / 1.2 : window.innerWidth,
-    // height: scaleDownSketch ? window.innerHeight / 1.3 : window.innerHeight / 1.2,
-    width: 1024,
-    height: 768,
+    width: scaleDownSketch ? window.innerWidth / 1.2 : window.innerWidth,
+    height: scaleDownSketch ? window.innerHeight / 1.3 : window.innerHeight / 1.2,
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_VERTICALLY,
     scene: [SpaceStretch2Game],
-    pixelArt: true,
+    audio: {
+        noAudio: true
+    },
+    render: {
+        pixelArt: true
+    },
     physics: {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
         }
-    }
-};
+    },
+    fps: 30
+}
 
 const game = new Phaser.Game(config)
+
