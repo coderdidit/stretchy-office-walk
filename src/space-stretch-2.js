@@ -1,6 +1,6 @@
 import Phaser from "phaser";
-import ballPath from './vendor/assets/images/asteroid1.png'
-import shipPath from './vendor/assets/images/ship-rotated.png'
+import hotDogPath from './vendor/assets/images/hotdog.png'
+import shipPath from './vendor/assets/images/car90.png'
 
 
 const playerNgSpeed = 30
@@ -12,12 +12,13 @@ class SpaceStretch2Game extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('ball', ballPath);
+        this.load.image('hotdog', hotDogPath);
         this.load.image('ship', shipPath);
     }
 
     create() {
-        const playerScale = 1.3
+        const playerScale = 1.4
+        const hotDogScale = 0.3
 
         this.score = 0
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -30,7 +31,7 @@ class SpaceStretch2Game extends Phaser.Scene {
         this.add.text(
             5,
             5,
-            'collect coins',
+            'Eat hotdogs 🌭',
             textSytle
         );
 
@@ -51,19 +52,19 @@ class SpaceStretch2Game extends Phaser.Scene {
         this.player.setScale(playerScale)
         this.player.setCollideWorldBounds(true);
 
-        const ballsGroup = this.physics.add.group({
-            key: 'ball',
+        const hotdogsGroup = this.physics.add.group({
+            key: 'hotdog',
             quantity: 15,
             collideWorldBounds: true,
         })
+        hotdogsGroup.getChildren().forEach(dog => dog.setScale(hotDogScale))
+        Phaser.Actions.RandomRectangle(hotdogsGroup.getChildren(), this.physics.world.bounds)
 
-        Phaser.Actions.RandomRectangle(ballsGroup.getChildren(), this.physics.world.bounds)
-
-        this.physics.add.overlap(this.player, ballsGroup, collectBalls, null, this)
+        this.physics.add.overlap(this.player, hotdogsGroup, collectBalls, null, this)
         function collectBalls(avatar, ball) {
             ball.destroy()
             this.score += 1
-            this.scoreBoard.setText(`Score: ${this.score}`)
+            this.scoreBoard.setText(`SCORE: ${this.score}`)
         }
     }
 
