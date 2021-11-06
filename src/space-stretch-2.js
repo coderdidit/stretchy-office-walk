@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import hotDogPath from './vendor/assets/images/hotdog.png'
 import shipPath from './vendor/assets/images/car90.png'
+import bgPath from './vendor/assets/images/concrete2.jpeg'
 
 
 const playerNgSpeed = 30
@@ -14,9 +15,14 @@ class SpaceStretch2Game extends Phaser.Scene {
     preload() {
         this.load.image('hotdog', hotDogPath);
         this.load.image('ship', shipPath);
+        this.load.image('bg', bgPath);
     }
 
     create() {
+        // background
+        this.bg = this.add.image(config.width / 2, config.height / 2, 'bg');
+        this.bg.setDisplaySize(config.width, config.height);
+
         const playerScale = 1.4
         const hotDogScale = 0.3
 
@@ -31,7 +37,7 @@ class SpaceStretch2Game extends Phaser.Scene {
         this.add.text(
             5,
             5,
-            'Eat hotdogs 🌭',
+            'Get hotdogs 🌭',
             textSytle
         );
 
