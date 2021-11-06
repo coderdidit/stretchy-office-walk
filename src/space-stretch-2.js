@@ -3,7 +3,7 @@ import ballPath from './vendor/assets/images/asteroid1.png'
 import shipPath from './vendor/assets/images/ship-rotated.png'
 
 
-const playerNgSpeed = 45
+const playerNgSpeed = 30
 const playerSpeed = 80
 
 class SpaceStretch2Game extends Phaser.Scene {
@@ -17,7 +17,7 @@ class SpaceStretch2Game extends Phaser.Scene {
     }
 
     create() {
-        const playerScale = 1.25
+        const playerScale = 1.3
 
         this.score = 0
         this.cursors = this.input.keyboard.createCursorKeys();
