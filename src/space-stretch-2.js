@@ -2,16 +2,23 @@ import Phaser from "phaser";
 import ballPath from './vendor/assets/images/asteroid1.png'
 import shipPath from './vendor/assets/images/ship-rotated.png'
 
-const paddleSpeedUp = 50
-const ballSpeedNg = 45
+
+const playerNgSpeed = 45
+const playerSpeed = 80
 
 class SpaceStretch2Game extends Phaser.Scene {
+    constructor() {
+        super({ key: 'space-stretch-2' });
+    }
+
     preload() {
         this.load.image('ball', ballPath);
         this.load.image('ship', shipPath);
     }
 
     create() {
+        const playerScale = 1.25
+
         this.score = 0
         this.cursors = this.input.keyboard.createCursorKeys();
         const textSytle = {
@@ -36,15 +43,15 @@ class SpaceStretch2Game extends Phaser.Scene {
         this.physics.world.setBoundsCollision(true, true, true, true)
 
         this.player = this.physics.add.sprite(
-            this.physics.world.bounds.width / 2, // x position
-            this.physics.world.bounds.height / 2, // y position
-            'ship', // key of image for the sprite
+            this.physics.world.bounds.width / 2,
+            this.physics.world.bounds.height / 2,
+            'ship',
         );
 
-        this.player.setScale(2.2)
+        this.player.setScale(playerScale)
         this.player.setCollideWorldBounds(true);
 
-        let ballsGroup = this.physics.add.group({
+        const ballsGroup = this.physics.add.group({
             key: 'ball',
             quantity: 15,
             collideWorldBounds: true,
@@ -53,7 +60,6 @@ class SpaceStretch2Game extends Phaser.Scene {
         Phaser.Actions.RandomRectangle(ballsGroup.getChildren(), this.physics.world.bounds)
 
         this.physics.add.overlap(this.player, ballsGroup, collectBalls, null, this)
-
         function collectBalls(avatar, ball) {
             ball.destroy()
             this.score += 1
@@ -66,18 +72,14 @@ class SpaceStretch2Game extends Phaser.Scene {
         this.player.body.setVelocity(0, 0);
         this.player.body.setAcceleration(0)
 
-        if (window.gameUpMove()) {
+        if (window.gameUpMove() || this.cursors.up.isDown) {
             const ng = this.player.angle
-            const vec = this.physics.velocityFromAngle(ng, paddleSpeedUp)
-            this.player.body.setVelocity(vec.x, vec.y);
-        } else if (window.gameJumpMove() || this.cursors.up.isDown) {
-            const ng = this.player.angle
-            const vec = this.physics.velocityFromAngle(ng, paddleSpeedUp)
+            const vec = this.physics.velocityFromAngle(ng, playerSpeed)
             this.player.body.setVelocity(vec.x, vec.y);
         } else if (window.gameLeftMove() || this.cursors.left.isDown) {
-            this.player.body.setAngularVelocity(ballSpeedNg * -1);
+            this.player.body.setAngularVelocity(playerNgSpeed * -1);
         } else if (window.gameRightMove() || this.cursors.right.isDown) {
-            this.player.body.setAngularVelocity(ballSpeedNg);
+            this.player.body.setAngularVelocity(playerNgSpeed);
         }
     }
 }
