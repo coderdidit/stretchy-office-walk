@@ -1,6 +1,6 @@
 body {
   font-family: Orbitron !important;
-  background-color: #262D83;
+  background-color: #497BCD;
 }
 
 body h4, h3, h5, p {
@@ -13,7 +13,7 @@ body h4, h3, h5, p {
 }
 
 #welcom-bg {
-  background-color: #262D83;
+  background-color: #497BCD;
   width: 100vw;
   height: 100vh;
   position: absolute;
@@ -82,26 +82,21 @@ body h4, h3, h5, p {
 }
 
 #main-nav {
-  background-color: #251F54;
+  background-color: #132028;
   color: #F7F7F8;
 }
 
 #main-nav p {
-  color: #FB35F3;
-}
-
-#main-nav .btn#connect-wallet {
-  color: white;
-  background-color: #6E19F8;
+  color: #C64314;
 }
 
 #play-btn {
-  background-color: #6E19F8;
+  background-color: darkred;
   color: #F0E6FE;
 }
 
 #welcom-bg-container h5 {
-  color: #FB35F3;
+  color: darkblue;
 }
 
 #welcom-bg-container .pxl-art {
