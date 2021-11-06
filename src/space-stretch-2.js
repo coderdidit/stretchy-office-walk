@@ -31,13 +31,13 @@ class SpaceStretch2Game extends Phaser.Scene {
         const textSytle = {
             fontFamily: 'Orbitron',
             fontSize: '25px',
-            fill: '#fff'
+            fill: '#F2B307'
         }
         // openingText
         this.add.text(
             5,
             5,
-            'Get hotdogs 🌭',
+            'GET HOTDOGS 🌭',
             textSytle
         );
 
