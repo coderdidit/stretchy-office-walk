@@ -28,7 +28,17 @@ class SpaceStretch2Game extends Phaser.Scene {
         // background
         this.bg = this.add.image(config.width / 2, config.height / 2, 'bg');
         this.bg.setDisplaySize(config.width, config.height);
-        
+
+        // this.anims.create({
+        //     key: 'hero-running',
+        //     frames: this.anims.generateFrameNumbers('hero-run-sheet'),
+        //     frameRate: 10,
+        //     repeat: -1
+        // })
+
+        // this.player2 = this.physics.add.sprite(250, 160, 'hero-run-sheet')
+        // this.player2.anims.play('hero-running')
+
         const playerScale = 1.4
         this.cursors = this.input.keyboard.createCursorKeys();
         this.physics.world.setBoundsCollision(true, true, true, true)
