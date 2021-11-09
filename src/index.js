@@ -4,7 +4,7 @@ import { predict } from './predictions'
 import { handleMoveToEvent } from './game-state'
 import * as params from './pose-detection-cfg';
 import { getAngleBetween } from './angles';
-import { left, right, up, stop } from './game-state'
+import { left, right, up, stop, down } from './game-state'
 
 const spinner = document.getElementById('spinner')
 const welcomBg = document.getElementById('welcom-bg')
@@ -64,9 +64,12 @@ const handlePoseToGameEvents = (pose) => {
     const rightElbowToSholder = getAngleBetween(rightShoulder, rightElbow)
 
     // arms and elbows
-    const angle = 40
-    const bothArmsUp = (leftElbowToSholder > angle)
-        && (rightElbowToSholder > angle)
+    // const bothArmsUp = (leftElbowToSholder > angle)
+    //     && (rightElbowToSholder > angle)
+
+    const angle = 45
+    const moveUp = leftElbowToSholder > angle
+    const moveDown = rightElbowToSholder > angle
 
     const noseToLeftEyeYdistance = nose.y - leftEye.y
     const noseToRightEyeYdistance = nose.y - rightEye.y
@@ -101,9 +104,12 @@ const handlePoseToGameEvents = (pose) => {
     } else if (noseVissible && REVissible
         && noseToRightEyeYdistance < moveSideActivationDist) {
         return right;
-    } else if (shouldersAndElbowsVissible && bothArmsUp) {
+    } else if (moveUp) {
         movedUp = true
         return up;
+    } else if (moveDown) {
+        movedUp = false
+        return down;
     } else {
         movedUp = false
         return stop;
