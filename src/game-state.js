@@ -23,7 +23,6 @@ export const handleMoveToEvent = (move) => {
     } else {
         window.gameStateStop()
     }
-    console.log('move', move)
 }
 
 window.gameStateInit = () => {

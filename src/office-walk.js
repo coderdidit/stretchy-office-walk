@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import hotDogPath from './vendor/assets/images/hotdog.png'
 import shipPath from './vendor/assets/images/car90.png'
-import bgPath from './vendor/assets/images/concrete2.jpeg'
+import bgPath from './vendor/assets/images/sMap.png'
 import heroRunSheet from './vendor/assets/hero/run.png'
 
 
@@ -28,41 +28,9 @@ class SpaceStretch2Game extends Phaser.Scene {
         // background
         this.bg = this.add.image(config.width / 2, config.height / 2, 'bg');
         this.bg.setDisplaySize(config.width, config.height);
-
-        // this.anims.create({
-        //     key: 'hero-running',
-        //     frames: this.anims.generateFrameNumbers('hero-run-sheet'),
-        //     frameRate: 10,
-        //     repeat: -1
-        // })
-
-        // this.player2 = this.physics.add.sprite(250, 160, 'hero-run-sheet')
-        // this.player2.anims.play('hero-running')
-
+        
         const playerScale = 1.4
-        const hotDogScale = 0.3
-
-        this.score = 0
         this.cursors = this.input.keyboard.createCursorKeys();
-        const textSytle = {
-            fontFamily: 'Orbitron',
-            fontSize: '25px',
-            fill: '#F2B307'
-        }
-        // openingText
-        this.add.text(
-            5,
-            5,
-            'GET HOTDOGS 🌭',
-            textSytle
-        );
-
-        //Add the scoreboard in
-        this.scoreBoard = this.add.text(
-            this.physics.world.bounds.width - 150,
-            0,
-            "SCORE: 0", textSytle);
-
         this.physics.world.setBoundsCollision(true, true, true, true)
 
         this.player = this.physics.add.sprite(
@@ -72,22 +40,7 @@ class SpaceStretch2Game extends Phaser.Scene {
         );
 
         this.player.setScale(playerScale)
-        this.player.setCollideWorldBounds(true);
-
-        // const hotdogsGroup = this.physics.add.group({
-        //     key: 'hotdog',
-        //     quantity: 15,
-        //     collideWorldBounds: true,
-        // })
-        // hotdogsGroup.getChildren().forEach(dog => dog.setScale(hotDogScale))
-        // Phaser.Actions.RandomRectangle(hotdogsGroup.getChildren(), this.physics.world.bounds)
-
-        // this.physics.add.overlap(this.player, hotdogsGroup, collectBalls, null, this)
-        // function collectBalls(avatar, ball) {
-        //     ball.destroy()
-        //     this.score += 1
-        //     this.scoreBoard.setText(`SCORE: ${this.score}`)
-        // }
+        this.player.setCollideWorldBounds(true);   
     }
 
     update(time, delta) {
@@ -102,20 +55,15 @@ class SpaceStretch2Game extends Phaser.Scene {
         if (window.gameUpMove() || this.cursors.up.isDown) {
             this.player.y -= 2;
             this.player.angle = -90;
-            // const ng = this.player.angle
-            // const vec = this.physics.velocityFromAngle(ng, playerSpeed)
-            // this.player.body.setVelocity(vec.x, vec.y);
         } else if (window.gameDownMove() || this.cursors.down.isDown) {
             this.player.y += 2;
             this.player.angle = 90;
         } else if (window.gameLeftMove() || this.cursors.left.isDown) {
             this.player.x -= 2;
             this.player.angle = 180;
-            // this.player.body.setAngularVelocity(playerNgSpeed * -1);
         } else if (window.gameRightMove() || this.cursors.right.isDown) {
             this.player.x += 2;
             this.player.angle = 0;
-            // this.player.body.setAngularVelocity(playerNgSpeed);
         }
     }
 }
