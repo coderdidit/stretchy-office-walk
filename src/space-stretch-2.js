@@ -29,15 +29,15 @@ class SpaceStretch2Game extends Phaser.Scene {
         this.bg = this.add.image(config.width / 2, config.height / 2, 'bg');
         this.bg.setDisplaySize(config.width, config.height);
 
-        this.anims.create({
-            key: 'hero-running',
-            frames: this.anims.generateFrameNumbers('hero-run-sheet'),
-            frameRate: 10,
-            repeat: -1
-        })
+        // this.anims.create({
+        //     key: 'hero-running',
+        //     frames: this.anims.generateFrameNumbers('hero-run-sheet'),
+        //     frameRate: 10,
+        //     repeat: -1
+        // })
 
-        this.player2 = this.physics.add.sprite(250, 160, 'hero-run-sheet')
-        this.player2.anims.play('hero-running')
+        // this.player2 = this.physics.add.sprite(250, 160, 'hero-run-sheet')
+        // this.player2.anims.play('hero-running')
 
         const playerScale = 1.4
         const hotDogScale = 0.3
@@ -74,20 +74,20 @@ class SpaceStretch2Game extends Phaser.Scene {
         this.player.setScale(playerScale)
         this.player.setCollideWorldBounds(true);
 
-        const hotdogsGroup = this.physics.add.group({
-            key: 'hotdog',
-            quantity: 15,
-            collideWorldBounds: true,
-        })
-        hotdogsGroup.getChildren().forEach(dog => dog.setScale(hotDogScale))
-        Phaser.Actions.RandomRectangle(hotdogsGroup.getChildren(), this.physics.world.bounds)
+        // const hotdogsGroup = this.physics.add.group({
+        //     key: 'hotdog',
+        //     quantity: 15,
+        //     collideWorldBounds: true,
+        // })
+        // hotdogsGroup.getChildren().forEach(dog => dog.setScale(hotDogScale))
+        // Phaser.Actions.RandomRectangle(hotdogsGroup.getChildren(), this.physics.world.bounds)
 
-        this.physics.add.overlap(this.player, hotdogsGroup, collectBalls, null, this)
-        function collectBalls(avatar, ball) {
-            ball.destroy()
-            this.score += 1
-            this.scoreBoard.setText(`SCORE: ${this.score}`)
-        }
+        // this.physics.add.overlap(this.player, hotdogsGroup, collectBalls, null, this)
+        // function collectBalls(avatar, ball) {
+        //     ball.destroy()
+        //     this.score += 1
+        //     this.scoreBoard.setText(`SCORE: ${this.score}`)
+        // }
     }
 
     update(time, delta) {
