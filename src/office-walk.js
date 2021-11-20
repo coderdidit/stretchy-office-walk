@@ -29,6 +29,7 @@ class SpaceStretch2Game extends Phaser.Scene {
         this.bg = this.add.image(config.width / 2, config.height / 2, 'bg');
         this.bg.setDisplaySize(config.width, config.height);
 
+        // TODO implement animations simillar to the below:
         // this.anims.create({
         //     key: 'hero-running',
         //     frames: this.anims.generateFrameNumbers('hero-run-sheet'),
