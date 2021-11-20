@@ -117,7 +117,7 @@ const handlePoseToGameEvents = (pose) => {
 }
 
 // fps for predictions
-let fps = 8;
+let fps = 20;
 let then = Date.now();
 let now, delta;
 let interval = 1000 / fps;
