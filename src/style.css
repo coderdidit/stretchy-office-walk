@@ -1,6 +1,6 @@
 body {
   font-family: Orbitron !important;
-  background-color: #497BCD;
+  background-color: #F7F5F4;
 }
 
 body h4, h3, h5, p {
@@ -9,11 +9,11 @@ body h4, h3, h5, p {
 
 #video-output {
   transform: scaleX(-1);
-  border: 5px solid #FB35F3;
+  border: 5px solid #02D6A0;
 }
 
 #welcom-bg {
-  background-color: #497BCD;
+  background-color: #F7F5F4;
   width: 100vw;
   height: 100vh;
   position: absolute;
@@ -30,7 +30,7 @@ body h4, h3, h5, p {
 
 #main-canvas canvas {
   color: #F0E6FE;
-  border: 3px solid hotpink;
+  border: 3px solid #02D6A0;
 }
 
 @media all and (min-width: 450px) {
@@ -82,41 +82,42 @@ body h4, h3, h5, p {
 }
 
 #main-nav {
-  background-color: #132028;
+  background-color: #202441;
   color: #F7F7F8;
 }
 
 #main-nav p {
-  color: #C64314;
+  color: #02D6A0;
 }
 
 #play-btn {
-  background-color: darkred;
+  background-color: #02D6A0;
   color: #F0E6FE;
 }
 
 #welcom-bg-container h5 {
-  color: darkblue;
+  color: #212121;
 }
 
 #welcom-bg-container .pxl-art {
-  color: chartreuse;
+  color: #02D6A0;
 }
 
 #welcom-bg-container p {
-  color: #4c555e;
+  color: #02D6A0;
 }
 
 #title-and {
-  color: aqua;
+  color: #02D6A0;
 }
 
 #title-move {
-  color: chocolate;
+  color: #F0E6FE;
 }
 
 .space-icons img {
   width: 3vw;
+  image-rendering: pixelated;
 }
 
 #spinner {

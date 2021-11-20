@@ -4,9 +4,8 @@ const move = "move"
 export const left = "left"
 export const right = "right"
 export const up = "up"
-
-const jump = "jump"
-const down = "down"
+export const jump = "jump"
+export const down = "down"
 export const stop = "stop"
 
 let prevState = stop
@@ -19,6 +18,8 @@ export const handleMoveToEvent = (move) => {
         window.gameStateMoveRight()
     } else if (move == up) {
         window.gameStateMoveUp()
+    } else if (move == down) {
+        window.gameStateMoveDown()
     } else {
         window.gameStateStop()
     }
