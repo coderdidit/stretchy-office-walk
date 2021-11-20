@@ -124,7 +124,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = updatePlayerStats;
-exports.handleMoveToEvent = exports.stop = exports.up = exports.right = exports.left = void 0;
+exports.handleMoveToEvent = exports.stop = exports.down = exports.jump = exports.up = exports.right = exports.left = void 0;
 var play = "play";
 var move = "move";
 var left = "left";
@@ -134,7 +134,9 @@ exports.right = right;
 var up = "up";
 exports.up = up;
 var jump = "jump";
+exports.jump = jump;
 var down = "down";
+exports.down = down;
 var stop = "stop";
 exports.stop = stop;
 var prevState = stop;
@@ -147,6 +149,8 @@ var handleMoveToEvent = function handleMoveToEvent(move) {
     window.gameStateMoveRight();
   } else if (move == up) {
     window.gameStateMoveUp();
+  } else if (move == down) {
+    window.gameStateMoveDown();
   } else {
     window.gameStateStop();
   }
@@ -288,7 +292,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50214" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50072" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -465,4 +469,4 @@ function hmrAcceptRun(bundle, id) {
   }
 }
 },{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","game-state.js"], null)
-//# sourceMappingURL=https://coderdidit.com/space-stretch-2/game-state.c415ee40.js.map
+//# sourceMappingURL=https://coderdidit.com/stretchy-office-walk/game-state.c415ee40.js.map
