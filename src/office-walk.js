@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import hotDogPath from './vendor/assets/images/hotdog.png'
 import shipPath from './vendor/assets/images/car90.png'
-import bgPath from './vendor/assets/images/sMap.png'
+import bgPath from './vendor/assets/images/concrete2.jpeg'
 import heroRunSheet from './vendor/assets/hero/run.png'
 
 
