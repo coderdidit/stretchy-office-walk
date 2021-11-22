@@ -68,8 +68,10 @@ const handlePoseToGameEvents = (pose) => {
     //     && (rightElbowToSholder > angle)
 
     const angle = 45
-    const moveUp = leftElbowToSholder > angle
-    const moveDown = rightElbowToSholder > angle
+    const moveDown = leftElbowToSholder > angle
+        && rightElbowToSholder < angle
+    const moveUp = rightElbowToSholder > angle
+        && leftElbowToSholder < angle
 
     const noseToLeftEyeYdistance = nose.y - leftEye.y
     const noseToRightEyeYdistance = nose.y - rightEye.y
@@ -111,7 +113,7 @@ const handlePoseToGameEvents = (pose) => {
         movedUp = false
         return down;
     } else {
-        movedUp = false
+        // movedUp = false
         return stop;
     }
 }
