@@ -63,10 +63,6 @@ const handlePoseToGameEvents = (pose) => {
     const leftElbowToSholder = getAngleBetween(leftShoulder, leftElbow)
     const rightElbowToSholder = getAngleBetween(rightShoulder, rightElbow)
 
-    // arms and elbows
-    // const bothArmsUp = (leftElbowToSholder > angle)
-    //     && (rightElbowToSholder > angle)
-
     const angle = 45
     const moveDown = leftElbowToSholder > angle
         && rightElbowToSholder < angle
@@ -83,12 +79,8 @@ const handlePoseToGameEvents = (pose) => {
     const lEVissible = leftEye.score > scoreThreshold
     const REVissible = rightEye.score > scoreThreshold
 
-    const lShoulderVissible = leftShoulder.score > scoreThreshold
-    const rShoulderVissible = rightShoulder.score > scoreThreshold
     const lElbowVissible = leftElbow.score > scoreThreshold
     const rElbowVissible = rightElbow.score > scoreThreshold
-
-    const shouldersVisible = lShoulderVissible && rShoulderVissible
 
     let visibleShoulders = 0
     if (lElbowVissible) {
@@ -97,7 +89,6 @@ const handlePoseToGameEvents = (pose) => {
     if (rElbowVissible) {
         visibleShoulders += 1
     }
-    const shouldersAndElbowsVissible = shouldersVisible && visibleShoulders == 2
 
     const moveSideActivationDist = 8
     if (noseVissible && lEVissible
@@ -113,7 +104,6 @@ const handlePoseToGameEvents = (pose) => {
         movedUp = false
         return down;
     } else {
-        // movedUp = false
         return stop;
     }
 }
