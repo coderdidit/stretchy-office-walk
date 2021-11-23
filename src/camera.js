@@ -198,18 +198,17 @@ export class Camera {
    * @param keypoints A list of keypoints.
    */
   drawSkeleton(keypoints) {
-    let color = "blue"
     this.ctx.lineWidth = params.DEFAULT_LINE_WIDTH;
     posedetection.util.getAdjacentPairs(params.PoseDetectionCfg.model).forEach(([
       i, j
     ]) => {
       const kp1 = keypoints[i];
       const kp2 = keypoints[j];
+      let color = "blue"
       if (kp1.name == "left_shoulder" && kp2.name == "left_elbow"
         && window.gameUpMove()) {
         color = "red"
-      }
-      if (kp1.name == "right_shoulder" && kp2.name == "right_elbow"
+      } else if (kp1.name == "right_shoulder" && kp2.name == "right_elbow"
         && window.gameDownMove()) {
         color = "red"
       }
