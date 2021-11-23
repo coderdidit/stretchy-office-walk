@@ -205,8 +205,12 @@ export class Camera {
     ]) => {
       const kp1 = keypoints[i];
       const kp2 = keypoints[j];
-      if (kp1.name.endsWith("shoulder") && kp2.name.endsWith("elbow")
+      if (kp1.name == "left_shoulder" && kp2.name == "left_elbow"
         && window.gameUpMove()) {
+        color = "red"
+      }
+      if (kp1.name == "right_shoulder" && kp2.name == "right_elbow"
+        && window.gameDownMove()) {
         color = "red"
       }
       if (allowedKeypoints.has(kp1.name) && allowedKeypoints.has(kp2.name)) {
