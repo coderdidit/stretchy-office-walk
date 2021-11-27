@@ -6,8 +6,7 @@ import faunePngPath from './vendor/assets/sprites/faune.png'
 import fauneJsonPath from './vendor/assets/sprites/faune.json'
 
 
-const playerNgSpeed = 30
-const playerSpeed = 80
+const playerSpeed = 2
 
 class SpaceStretch2Game extends Phaser.Scene {
     constructor() {
@@ -25,18 +24,37 @@ class SpaceStretch2Game extends Phaser.Scene {
         this.bg = this.add.image(config.width / 2, config.height / 2, 'bg');
         this.bg.setDisplaySize(config.width, config.height);
 
-        const playerScale = 1.4
+        const playerScale = 2
         this.cursors = this.input.keyboard.createCursorKeys();
         this.physics.world.setBoundsCollision(true, true, true, true)
 
+        // player setup
+        const fauneKey = 'faune'
         this.player = this.physics.add.sprite(
             this.physics.world.bounds.width / 2,
             this.physics.world.bounds.height / 2,
-            'ship',
+            fauneKey,
+            'run-down-1.png'
         );
-
         this.player.setScale(playerScale)
-        this.player.setCollideWorldBounds(true);   
+        this.player.setCollideWorldBounds(true);
+
+        this.anims.create({
+            key: 'faune-idle-down',
+            frames: [{ key: fauneKey, frame: 'run-down-1.png' }]
+        })
+
+        this.anims.create({
+            key: 'faune-run-down',
+            frames: this.anims.generateFrameNames(
+                fauneKey,
+                { start: 1, end: 8, prefix: 'run-down-', suffix: '.png' },
+            ),
+            repeat: -1,
+            frameRate: 15
+        })
+
+        this.player.anims.play('faune-run-down')
     }
 
     update(time, delta) {
@@ -49,17 +67,17 @@ class SpaceStretch2Game extends Phaser.Scene {
         this.player.body.setAcceleration(0)
 
         if (window.gameUpMove() || this.cursors.up.isDown) {
-            this.player.y -= 2;
-            this.player.angle = -90;
+            this.player.y -= playerSpeed;
+            // this.player.angle = -90;
         } else if (window.gameDownMove() || this.cursors.down.isDown) {
-            this.player.y += 2;
-            this.player.angle = 90;
+            this.player.y += playerSpeed;
+            // this.player.angle = 90;
         } else if (window.gameLeftMove() || this.cursors.left.isDown) {
-            this.player.x -= 2;
-            this.player.angle = 180;
+            this.player.x -= playerSpeed;
+            // this.player.angle = 180;
         } else if (window.gameRightMove() || this.cursors.right.isDown) {
-            this.player.x += 2;
-            this.player.angle = 0;
+            this.player.x += playerSpeed;
+            // this.player.angle = 0;
         }
     }
 }
