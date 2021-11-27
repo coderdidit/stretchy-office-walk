@@ -93,6 +93,8 @@ class SpaceStretch2Game extends Phaser.Scene {
             repeat: -1,
             frameRate: 15
         })
+
+        this.player.anims.play('faune-idle-down', true)
     }
 
     update(time, delta) {
@@ -124,9 +126,11 @@ class SpaceStretch2Game extends Phaser.Scene {
         } else {
             // idle
             // this.player.body.setAngularVelocity(0);
+            const direction = this.player.anims.currentAnim.key
+                .split('-')[2]
             this.player.body.setVelocity(0, 0)
             this.player.body.setAcceleration(0)
-            this.player.anims.play('faune-idle-down', true)
+            this.player.anims.play(`faune-idle-${direction}`, true)
         }
     }
 }
