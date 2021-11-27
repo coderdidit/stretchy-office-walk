@@ -22,12 +22,20 @@ class SpaceStretch2Game extends Phaser.Scene {
     }
 
     create() {
-        // background
-        this.bg = this.add.image(config.width / 2, config.height / 2, 'bg');
-        this.bg.setDisplaySize(config.width, config.height);
+        // map [background]
+        const mapScale = 3
+        const map = this.make.tilemap({key: 'dangeon'})
+        const tileset = map.addTilesetImage('dangeon', 'tiles')
+        const ground = map.createLayer('ground', tileset)
+        const walls = map.createLayer('walls', tileset)
+        ground.setScale(mapScale)
+        walls.setScale(mapScale)
+
+
+        // this.bg = this.add.image(config.width / 2, config.height / 2, 'bg');
+        // this.bg.setDisplaySize(config.width, config.height);
 
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.physics.world.setBoundsCollision(true, true, true, true)
 
         // player setup
         const fauneKey = 'faune'
@@ -38,7 +46,6 @@ class SpaceStretch2Game extends Phaser.Scene {
             'run-down-1.png'
         );
         this.player.setScale(playerScale)
-        this.player.setCollideWorldBounds(true);
         this.player.body.setSize(
             this.player.width * 0.5,
             this.player.height * 0.8
