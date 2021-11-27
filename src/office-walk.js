@@ -38,6 +38,10 @@ class SpaceStretch2Game extends Phaser.Scene {
         );
         this.player.setScale(playerScale)
         this.player.setCollideWorldBounds(true);
+        this.player.body.setSize(
+            this.player.width * 0.5,
+            this.player.height * 0.8
+        )
 
         // idle down
         this.anims.create({
@@ -115,6 +119,7 @@ class SpaceStretch2Game extends Phaser.Scene {
             this.player.x += playerSpeed;
             this.player.anims.play('faune-run-side', true)
             this.player.scaleX = 1 * playerScale
+            this.player.body.offset.x = 8
             // this.player.angle = 0;
         } else {
             // idle
@@ -147,7 +152,7 @@ const config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: true
+            // debug: true
         },
     },
     fps: 30
