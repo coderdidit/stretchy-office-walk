@@ -24,7 +24,7 @@ class SpaceStretch2Game extends Phaser.Scene {
         // background
         this.bg = this.add.image(config.width / 2, config.height / 2, 'bg');
         this.bg.setDisplaySize(config.width, config.height);
-        
+
         this.cursors = this.input.keyboard.createCursorKeys();
         this.physics.world.setBoundsCollision(true, true, true, true)
 
@@ -38,23 +38,23 @@ class SpaceStretch2Game extends Phaser.Scene {
         );
         this.player.setScale(playerScale)
         this.player.setCollideWorldBounds(true);
-        
+
         // idle down
         this.anims.create({
             key: 'faune-idle-down',
-            frames: [{ key: fauneKey, frame: 'run-down-1.png' }]
+            frames: [{ key: fauneKey, frame: 'run-down-3.png' }]
         })
 
         // idle up
         this.anims.create({
             key: 'faune-idle-up',
-            frames: [{ key: fauneKey, frame: 'run-up-1.png' }]
+            frames: [{ key: fauneKey, frame: 'run-up-3.png' }]
         })
 
         // idle side
         this.anims.create({
             key: 'faune-idle-side',
-            frames: [{ key: fauneKey, frame: 'run-side-1.png' }]
+            frames: [{ key: fauneKey, frame: 'run-side-3.png' }]
         })
 
         // down
@@ -89,8 +89,6 @@ class SpaceStretch2Game extends Phaser.Scene {
             repeat: -1,
             frameRate: 15
         })
-
-        // this.player.anims.play('faune-run-side')
     }
 
     update(time, delta) {
@@ -99,30 +97,31 @@ class SpaceStretch2Game extends Phaser.Scene {
 
     handlePlayerMoves() {
 
-        // idle
-        this.player.body.setAngularVelocity(0);
-        this.player.body.setVelocity(0, 0);
-        this.player.body.setAcceleration(0)
-        this.player.anims.play('faune-idle-down')
-
         if (window.gameUpMove() || this.cursors.up.isDown) {
             this.player.y -= playerSpeed;
-            this.player.anims.play('faune-run-up')
+            this.player.anims.play('faune-run-up', true)
             // this.player.angle = -90;
         } else if (window.gameDownMove() || this.cursors.down.isDown) {
             this.player.y += playerSpeed;
-            this.player.anims.play('faune-run-down')
+            this.player.anims.play('faune-run-down', true)
             // this.player.angle = 90;
         } else if (window.gameLeftMove() || this.cursors.left.isDown) {
             this.player.x -= playerSpeed;
-            this.player.anims.play('faune-run-side')
+            this.player.anims.play('faune-run-side', true)
             this.player.scaleX = -1 * playerScale
+            this.player.body.offset.x = 24
             // this.player.angle = 180;
         } else if (window.gameRightMove() || this.cursors.right.isDown) {
             this.player.x += playerSpeed;
-            this.player.anims.play('faune-run-side')
+            this.player.anims.play('faune-run-side', true)
             this.player.scaleX = 1 * playerScale
             // this.player.angle = 0;
+        } else {
+            // idle
+            // this.player.body.setAngularVelocity(0);
+            this.player.body.setVelocity(0, 0)
+            this.player.body.setAcceleration(0)
+            this.player.anims.play('faune-idle-down', true)
         }
     }
 }
@@ -148,7 +147,8 @@ const config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-        }
+            debug: true
+        },
     },
     fps: 30
 }
