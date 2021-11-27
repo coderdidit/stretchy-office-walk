@@ -1,13 +1,13 @@
 import Phaser from "phaser";
-import bgPath from './vendor/assets/images/concrete2.jpeg'
 import faunePngPath from './vendor/assets/sprites/faune.png'
 import fauneJsonPath from './vendor/assets/sprites/faune.json'
 import dangeonPngPath from './vendor/assets/tilemaps/dangeon.png'
 import dangeonJsonPath from './vendor/assets/tilemaps/dangeon.json'
 
 
-const playerSpeed = 2
+const playerSpeed = 100
 const playerScale = 2
+const mapScale = 3
 
 class SpaceStretch2Game extends Phaser.Scene {
     constructor() {
@@ -15,7 +15,6 @@ class SpaceStretch2Game extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('bg', bgPath);
         this.load.image('tiles', dangeonPngPath)
         this.load.tilemapTiledJSON('dangeon', dangeonJsonPath)
         this.load.atlas('faune', faunePngPath, fauneJsonPath)
@@ -23,18 +22,30 @@ class SpaceStretch2Game extends Phaser.Scene {
 
     create() {
         // map [background]
-        const mapScale = 3
-        const map = this.make.tilemap({key: 'dangeon'})
+        const map = this.make.tilemap({ key: 'dangeon' })
         const tileset = map.addTilesetImage('dangeon', 'tiles')
-        const ground = map.createLayer('ground', tileset)
-        const walls = map.createLayer('walls', tileset)
-        ground.setScale(mapScale)
-        walls.setScale(mapScale)
+        const groundLayer = map.createLayer('ground', tileset)
+        this.wallsLayer = map.createLayer('walls', tileset)
+        groundLayer.setScale(mapScale)
+        this.wallsLayer.setScale(mapScale)
 
+        this.wallsLayer.setSize(
+            this.wallsLayer.width * 0.5,
+            this.wallsLayer.height * 0.8
+        )
 
-        // this.bg = this.add.image(config.width / 2, config.height / 2, 'bg');
-        // this.bg.setDisplaySize(config.width, config.height);
+        this.wallsLayer.setCollisionByProperty({
+            collides: true
+        })
 
+        // debugging
+        // const debugGraphics = this.add.graphics().setAlpha(0.75);
+        // this.wallsLayer.renderDebug(debugGraphics, {
+        //     tileColor: null, // Color of non-colliding tiles
+        //     collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+        //     faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+        // });
+        
         this.cursors = this.input.keyboard.createCursorKeys();
 
         // player setup
@@ -103,6 +114,10 @@ class SpaceStretch2Game extends Phaser.Scene {
         })
 
         this.player.anims.play('faune-idle-down', true)
+
+        this.physics.add.collider(this.player, this.wallsLayer)
+
+        this.cameras.main.startFollow(this.player);
     }
 
     update(time, delta) {
@@ -112,21 +127,21 @@ class SpaceStretch2Game extends Phaser.Scene {
     handlePlayerMoves() {
 
         if (window.gameUpMove() || this.cursors.up.isDown) {
-            this.player.y -= playerSpeed;
+            this.player.setVelocityY(-playerSpeed)
             this.player.anims.play('faune-run-up', true)
             // this.player.angle = -90;
         } else if (window.gameDownMove() || this.cursors.down.isDown) {
-            this.player.y += playerSpeed;
+            this.player.setVelocityY(playerSpeed)
             this.player.anims.play('faune-run-down', true)
             // this.player.angle = 90;
         } else if (window.gameLeftMove() || this.cursors.left.isDown) {
-            this.player.x -= playerSpeed;
+            this.player.setVelocityX(-playerSpeed)
             this.player.anims.play('faune-run-side', true)
             this.player.scaleX = -1 * playerScale
             this.player.body.offset.x = 24
             // this.player.angle = 180;
         } else if (window.gameRightMove() || this.cursors.right.isDown) {
-            this.player.x += playerSpeed;
+            this.player.setVelocityX(playerSpeed)
             this.player.anims.play('faune-run-side', true)
             this.player.scaleX = 1 * playerScale
             this.player.body.offset.x = 8
@@ -136,8 +151,7 @@ class SpaceStretch2Game extends Phaser.Scene {
             // this.player.body.setAngularVelocity(0);
             const direction = this.player.anims.currentAnim.key
                 .split('-')[2]
-            this.player.body.setVelocity(0, 0)
-            this.player.body.setAcceleration(0)
+            this.player.setVelocity(0, 0)
             this.player.anims.play(`faune-idle-${direction}`, true)
         }
     }
