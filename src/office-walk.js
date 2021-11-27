@@ -2,7 +2,8 @@ import Phaser from "phaser";
 import hotDogPath from './vendor/assets/images/hotdog.png'
 import shipPath from './vendor/assets/images/car90.png'
 import bgPath from './vendor/assets/images/concrete2.jpeg'
-import heroRunSheet from './vendor/assets/hero/run.png'
+import faunePngPath from './vendor/assets/sprites/faune.png'
+import fauneJsonPath from './vendor/assets/sprites/faune.json'
 
 
 const playerNgSpeed = 30
@@ -14,31 +15,15 @@ class SpaceStretch2Game extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('hotdog', hotDogPath);
         this.load.image('ship', shipPath);
         this.load.image('bg', bgPath);
-
-        this.load.spritesheet('hero-run-sheet', heroRunSheet, {
-            frameWidth: 32,
-            frameHeight: 64
-        })
+        this.load.atlas('faune', faunePngPath, fauneJsonPath)
     }
 
     create() {
         // background
         this.bg = this.add.image(config.width / 2, config.height / 2, 'bg');
         this.bg.setDisplaySize(config.width, config.height);
-
-        // TODO implement animations simillar to the below:
-        // this.anims.create({
-        //     key: 'hero-running',
-        //     frames: this.anims.generateFrameNumbers('hero-run-sheet'),
-        //     frameRate: 10,
-        //     repeat: -1
-        // })
-
-        // this.player2 = this.physics.add.sprite(250, 160, 'hero-run-sheet')
-        // this.player2.anims.play('hero-running')
 
         const playerScale = 1.4
         this.cursors = this.input.keyboard.createCursorKeys();
