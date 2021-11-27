@@ -1,9 +1,9 @@
 import Phaser from "phaser";
-import hotDogPath from './vendor/assets/images/hotdog.png'
-import shipPath from './vendor/assets/images/car90.png'
 import bgPath from './vendor/assets/images/concrete2.jpeg'
 import faunePngPath from './vendor/assets/sprites/faune.png'
 import fauneJsonPath from './vendor/assets/sprites/faune.json'
+import dangeonPngPath from './vendor/assets/tilemaps/dangeon.png'
+import dangeonJsonPath from './vendor/assets/tilemaps/dangeon.json'
 
 
 const playerSpeed = 2
@@ -15,8 +15,9 @@ class SpaceStretch2Game extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('ship', shipPath);
         this.load.image('bg', bgPath);
+        this.load.image('tiles', dangeonPngPath)
+        this.load.tilemapTiledJSON('dangeon', dangeonJsonPath)
         this.load.atlas('faune', faunePngPath, fauneJsonPath)
     }
 
