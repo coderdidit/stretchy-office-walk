@@ -1,6 +1,6 @@
-# Space Strech Mini Game 
+# Stretch at Dungeons Mini Game 
 
-![gif-xl](https://user-images.githubusercontent.com/86926500/140054207-06de8aec-df6f-485d-b23b-9e5bf2853554.gif)
+![Screenshot 2021-11-28 at 22 09 12](https://user-images.githubusercontent.com/86926500/143787953-7b78977d-4efb-459f-830f-3eb17a1e47d0.png)
 
 [Paly it here (game is deployed)](https://coderdidit.com/space-stretch)
 
