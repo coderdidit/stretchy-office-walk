@@ -4,7 +4,7 @@ import { predict } from './predictions'
 import { handleMoveToEvent } from './game-state'
 import * as params from './pose-detection-cfg';
 import { getAngleBetween } from './angles';
-import { left, right, up, stop, down } from './game-state'
+import { left, right, up, stop, down, fire } from './game-state'
 
 const spinner = document.getElementById('spinner')
 const welcomBg = document.getElementById('welcom-bg')
@@ -60,14 +60,19 @@ const handlePoseToGameEvents = (pose) => {
     const leftElbow = poseKeypoints[14]
     const rightElbow = poseKeypoints[13]
 
-    const leftElbowToSholder = getAngleBetween(leftShoulder, leftElbow)
+    // TODO investigate more how this logic works in terms of flipping
+    const leftElbowToSholder = getAngleBetween(leftElbow, leftShoulder) * -1
     const rightElbowToSholder = getAngleBetween(rightShoulder, rightElbow)
 
-    const angle = 45
-    const moveDown = leftElbowToSholder > angle
-        && rightElbowToSholder < angle
-    const moveUp = rightElbowToSholder > angle
-        && leftElbowToSholder < angle
+    const angle = 52
+
+    const bothArmsUp = (leftElbowToSholder > angle)
+        && (rightElbowToSholder > angle)
+
+    const moveDown = (leftElbowToSholder > angle
+        && rightElbowToSholder < angle) && !bothArmsUp
+    const moveUp = (rightElbowToSholder > angle
+        && leftElbowToSholder < angle) && !bothArmsUp
 
     const noseToLeftEyeYdistance = nose.y - leftEye.y
     const noseToRightEyeYdistance = nose.y - rightEye.y
@@ -82,6 +87,9 @@ const handlePoseToGameEvents = (pose) => {
     const lElbowVissible = leftElbow.score > scoreThreshold
     const rElbowVissible = rightElbow.score > scoreThreshold
 
+    const lShoulderVissible = leftShoulder.score > scoreThreshold
+    const rShoulderVissible = rightShoulder.score > scoreThreshold
+    const shouldersVisible = lShoulderVissible && rShoulderVissible
     let visibleShoulders = 0
     if (lElbowVissible) {
         visibleShoulders += 1
@@ -90,8 +98,12 @@ const handlePoseToGameEvents = (pose) => {
         visibleShoulders += 1
     }
 
+    const shouldersAndElbowsVissible = shouldersVisible && visibleShoulders == 2
+
     const moveSideActivationDist = 8
-    if (noseVissible && lEVissible
+    if (shouldersAndElbowsVissible && bothArmsUp) {
+        return fire
+    } else if (noseVissible && lEVissible
         && noseToLeftEyeYdistance < moveSideActivationDist) {
         return left;
     } else if (noseVissible && REVissible

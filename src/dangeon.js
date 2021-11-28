@@ -3,6 +3,7 @@ import faunePngPath from './vendor/assets/sprites/faune.png'
 import fauneJsonPath from './vendor/assets/sprites/faune.json'
 import dangeonPngPath from './vendor/assets/tilemaps/dangeon.png'
 import dangeonJsonPath from './vendor/assets/tilemaps/dangeon.json'
+import knifePath from './vendor/assets/weapons/weapon_knife.png'
 import { debugCollisonBounds } from './utils/debugger'
 
 
@@ -20,6 +21,7 @@ class DangeonStretchGame extends Phaser.Scene {
         this.load.image('tiles', dangeonPngPath)
         this.load.tilemapTiledJSON('dangeon', dangeonJsonPath)
         this.load.atlas('faune', faunePngPath, fauneJsonPath)
+        this.load.image('knife', knifePath)
     }
 
     create() {
@@ -47,6 +49,10 @@ class DangeonStretchGame extends Phaser.Scene {
 
         this.cursors = this.input.keyboard.createCursorKeys();
 
+        this.knives = this.physics.add.group({
+            classType: Phaser.Physics.Arcade.Image,
+        })
+
         // player setup
         const fauneKey = 'faune'
         this.player = this.physics.add.sprite(
@@ -66,6 +72,7 @@ class DangeonStretchGame extends Phaser.Scene {
         this.createPlayerAnims(this.player, fauneKey)
         this.player.anims.play('faune-idle-down', true)
         this.physics.add.collider(this.player, this.wallsLayer)
+        this.physics.add.collider(this.knives, this.wallsLayer)
         this.cameras.main.startFollow(this.player);
     }
 
@@ -126,9 +133,52 @@ class DangeonStretchGame extends Phaser.Scene {
         this.handlePlayerMoves()
     }
 
+    getPlayerDirection() {
+        return this.player.anims.currentAnim.key
+            .split('-')[2]
+    }
+
+    throwKnife() {
+        const knifeSpeed = 300
+        const knife = this.knives.get(this.player.x, this.player.y, 'knife')
+        knife.setScale(1.2)
+        if (knife) {
+            const direction = this.getPlayerDirection()
+            const vec = new Phaser.Math.Vector2(0, 0)
+
+            switch (direction) {
+                case 'up':
+                    vec.y = -1
+                    break
+
+                case 'down':
+                    vec.y = 1
+                    break
+
+                default:
+                case 'side':
+                    if (this.player.flipX) {
+                        vec.x = -1
+                    }
+                    else {
+                        vec.x = 1
+                    }
+                    break
+            }
+            const angle = vec.angle()
+
+            knife.setActive(true)
+            knife.setVisible(true)
+            knife.setRotation(angle)
+            knife.setVelocity(vec.x * knifeSpeed, vec.y * knifeSpeed)
+        }
+    }
+
     handlePlayerMoves() {
 
-        if (window.gameUpMove() || this.cursors.up.isDown) {
+        if (window.gameFireMove() || this.cursors.space.isDown) {
+            this.throwKnife()
+        } else if (window.gameUpMove() || this.cursors.up.isDown) {
             this.player.setVelocity(0, -playerSpeed)
             this.player.anims.play('faune-run-up', true)
         } else if (window.gameDownMove() || this.cursors.down.isDown) {
@@ -144,8 +194,7 @@ class DangeonStretchGame extends Phaser.Scene {
             this.player.setFlipX(false)
         } else {
             // idle
-            const direction = this.player.anims.currentAnim.key
-                .split('-')[2]
+            const direction = this.getPlayerDirection()
             this.player.setVelocity(0, 0)
             this.player.anims.play(`faune-idle-${direction}`, true)
         }

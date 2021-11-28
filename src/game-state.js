@@ -7,12 +7,15 @@ export const up = "up"
 export const jump = "jump"
 export const down = "down"
 export const stop = "stop"
+export const fire = "fire"
 
 let prevState = stop
 let lastTimeChangeToStop = Date.now()
 
 export const handleMoveToEvent = (move) => {
-    if (move == left) {
+    if (move == fire) {
+        window.gameStateFire()
+    } else if (move == left) {
         window.gameStateMoveLeft()
     } else if (move == right) {
         window.gameStateMoveRight()
@@ -27,6 +30,10 @@ export const handleMoveToEvent = (move) => {
 
 window.gameStateInit = () => {
     window.gameState = stop
+}
+
+window.gameFireMove = () => {
+    return window.gameState == fire
 }
 
 window.gameLeftMove = () => {
@@ -52,6 +59,11 @@ window.gameDownMove = () => {
 window.gameStateMove = () => {
     prevState = window.gameState
     window.gameState = move
+}
+
+window.gameStateFire = () => {
+    prevState = window.gameState
+    window.gameState = fire
 }
 
 window.gameStateMoveLeft = () => {
