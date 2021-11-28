@@ -3,15 +3,17 @@ import faunePngPath from './vendor/assets/sprites/faune.png'
 import fauneJsonPath from './vendor/assets/sprites/faune.json'
 import dangeonPngPath from './vendor/assets/tilemaps/dangeon.png'
 import dangeonJsonPath from './vendor/assets/tilemaps/dangeon.json'
+import {debugCollisonBounds} from './utils/debugger'
 
 
 const playerSpeed = 100
 const playerScale = 2
 const mapScale = 3
+const debug = false
 
-class SpaceStretch2Game extends Phaser.Scene {
+class DangeonStretchGame extends Phaser.Scene {
     constructor() {
-        super({ key: 'space-stretch-2' });
+        super({ key: 'dangeon-stretchGame' });
     }
 
     preload() {
@@ -39,12 +41,9 @@ class SpaceStretch2Game extends Phaser.Scene {
         })
 
         // debugging
-        const debugGraphics = this.add.graphics().setAlpha(0.75);
-        this.wallsLayer.renderDebug(debugGraphics, {
-            tileColor: null, // Color of non-colliding tiles
-            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-            faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
-        });
+        if (debug) {
+            debugCollisonBounds(this.wallsLayer, this)
+        }
         
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -57,31 +56,40 @@ class SpaceStretch2Game extends Phaser.Scene {
             'run-down-1.png'
         );
         this.player.setScale(playerScale)
+        
+        // adjust collision box
         this.player.body.setSize(
             this.player.width * 0.5,
             this.player.height * 0.8
         )
 
+        this.createPlayerAnims(this.player, fauneKey)
+        this.player.anims.play('faune-idle-down', true)
+        this.physics.add.collider(this.player, this.wallsLayer)
+        this.cameras.main.startFollow(this.player);
+    }
+
+    createPlayerAnims(player, fauneKey) {
         // idle down
-        this.anims.create({
+        player.anims.create({
             key: 'faune-idle-down',
             frames: [{ key: fauneKey, frame: 'run-down-3.png' }]
         })
 
         // idle up
-        this.anims.create({
+        player.anims.create({
             key: 'faune-idle-up',
             frames: [{ key: fauneKey, frame: 'run-up-3.png' }]
         })
 
         // idle side
-        this.anims.create({
+        player.anims.create({
             key: 'faune-idle-side',
             frames: [{ key: fauneKey, frame: 'run-side-3.png' }]
         })
 
         // down
-        this.anims.create({
+        player.anims.create({
             key: 'faune-run-down',
             frames: this.anims.generateFrameNames(
                 fauneKey,
@@ -92,7 +100,7 @@ class SpaceStretch2Game extends Phaser.Scene {
         })
 
         // up
-        this.anims.create({
+        player.anims.create({
             key: 'faune-run-up',
             frames: this.anims.generateFrameNames(
                 fauneKey,
@@ -103,7 +111,7 @@ class SpaceStretch2Game extends Phaser.Scene {
         })
 
         // side
-        this.anims.create({
+        player.anims.create({
             key: 'faune-run-side',
             frames: this.anims.generateFrameNames(
                 fauneKey,
@@ -112,12 +120,6 @@ class SpaceStretch2Game extends Phaser.Scene {
             repeat: -1,
             frameRate: 15
         })
-
-        this.player.anims.play('faune-idle-down', true)
-
-        this.physics.add.collider(this.player, this.wallsLayer)
-
-        this.cameras.main.startFollow(this.player);
     }
 
     update(time, delta) {
@@ -129,26 +131,19 @@ class SpaceStretch2Game extends Phaser.Scene {
         if (window.gameUpMove() || this.cursors.up.isDown) {
             this.player.setVelocity(0, -playerSpeed)
             this.player.anims.play('faune-run-up', true)
-            // this.player.angle = -90;
         } else if (window.gameDownMove() || this.cursors.down.isDown) {
             this.player.setVelocity(0, playerSpeed)
             this.player.anims.play('faune-run-down', true)
-            // this.player.angle = 90;
         } else if (window.gameLeftMove() || this.cursors.left.isDown) {
             this.player.setVelocity(-playerSpeed, 0)
             this.player.anims.play('faune-run-side', true)
-            this.player.scaleX = -1 * playerScale
-            this.player.body.offset.x = 24
-            // this.player.angle = 180;
+            this.player.setFlipX(true)
         } else if (window.gameRightMove() || this.cursors.right.isDown) {
             this.player.setVelocity(playerSpeed, 0)
             this.player.anims.play('faune-run-side', true)
-            this.player.scaleX = 1 * playerScale
-            this.player.body.offset.x = 8
-            // this.player.angle = 0;
+            this.player.setFlipX(false)
         } else {
             // idle
-            // this.player.body.setAngularVelocity(0);
             const direction = this.player.anims.currentAnim.key
                 .split('-')[2]
             this.player.setVelocity(0, 0)
@@ -167,7 +162,7 @@ const config = {
     height: scaleDownSketch ? window.innerHeight / 1.3 : window.innerHeight / 1.2,
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_VERTICALLY,
-    scene: [SpaceStretch2Game],
+    scene: [DangeonStretchGame],
     audio: {
         noAudio: true
     },
@@ -178,11 +173,10 @@ const config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            // debug: true
+            debug: debug
         },
     },
     fps: 30
 }
 
 const game = new Phaser.Game(config)
-
