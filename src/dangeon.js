@@ -3,6 +3,7 @@ import faunePngPath from './vendor/assets/sprites/faune.png'
 import fauneJsonPath from './vendor/assets/sprites/faune.json'
 import dangeonPngPath from './vendor/assets/tilemaps/dangeon.png'
 import dangeonJsonPath from './vendor/assets/tilemaps/dangeon.json'
+import knifePath from './vendor/assets/weapons/weapon_knife.png'
 import { debugCollisonBounds } from './utils/debugger'
 
 
@@ -20,6 +21,7 @@ class DangeonStretchGame extends Phaser.Scene {
         this.load.image('tiles', dangeonPngPath)
         this.load.tilemapTiledJSON('dangeon', dangeonJsonPath)
         this.load.atlas('faune', faunePngPath, fauneJsonPath)
+        this.load.image('knife', knifePath)
     }
 
     create() {
@@ -47,6 +49,11 @@ class DangeonStretchGame extends Phaser.Scene {
 
         this.cursors = this.input.keyboard.createCursorKeys();
 
+        this.knives = this.physics.add.group({
+            classType: Phaser.Physics.Arcade.Image,
+            maxSize: 3
+        })
+
         // player setup
         const fauneKey = 'faune'
         this.player = this.physics.add.sprite(
@@ -66,6 +73,7 @@ class DangeonStretchGame extends Phaser.Scene {
         this.createPlayerAnims(this.player, fauneKey)
         this.player.anims.play('faune-idle-down', true)
         this.physics.add.collider(this.player, this.wallsLayer)
+        this.physics.add.collider(this.knives, this.wallsLayer)
         this.cameras.main.startFollow(this.player);
     }
 
@@ -127,6 +135,16 @@ class DangeonStretchGame extends Phaser.Scene {
     }
 
     handlePlayerMoves() {
+
+        if (this.cursors.space.isDown) {
+            // throw knife
+            const knife = this.knives.get(this.player.x, this.player.y, 'knife')
+            if (knife) {
+                knife.setActive(true)
+                knife.setVisible(true)
+                knife.setVelocity(300, 300)
+            }
+        }
 
         if (window.gameUpMove() || this.cursors.up.isDown) {
             this.player.setVelocity(0, -playerSpeed)
