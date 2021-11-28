@@ -13,7 +13,7 @@ const debug = false
 
 class DangeonStretchGame extends Phaser.Scene {
     constructor() {
-        super({ key: 'dangeon-stretchGame' });
+        super({ key: 'dangeon-stretch' });
     }
 
     preload() {
