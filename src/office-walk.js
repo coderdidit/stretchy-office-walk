@@ -127,21 +127,21 @@ class SpaceStretch2Game extends Phaser.Scene {
     handlePlayerMoves() {
 
         if (window.gameUpMove() || this.cursors.up.isDown) {
-            this.player.setVelocityY(-playerSpeed)
+            this.player.setVelocity(0, -playerSpeed)
             this.player.anims.play('faune-run-up', true)
             // this.player.angle = -90;
         } else if (window.gameDownMove() || this.cursors.down.isDown) {
-            this.player.setVelocityY(playerSpeed)
+            this.player.setVelocity(0, playerSpeed)
             this.player.anims.play('faune-run-down', true)
             // this.player.angle = 90;
         } else if (window.gameLeftMove() || this.cursors.left.isDown) {
-            this.player.setVelocityX(-playerSpeed)
+            this.player.setVelocity(-playerSpeed, 0)
             this.player.anims.play('faune-run-side', true)
             this.player.scaleX = -1 * playerScale
             this.player.body.offset.x = 24
             // this.player.angle = 180;
         } else if (window.gameRightMove() || this.cursors.right.isDown) {
-            this.player.setVelocityX(playerSpeed)
+            this.player.setVelocity(playerSpeed, 0)
             this.player.anims.play('faune-run-side', true)
             this.player.scaleX = 1 * playerScale
             this.player.body.offset.x = 8
