@@ -176,7 +176,7 @@ class DangeonStretchGame extends Phaser.Scene {
 
     handlePlayerMoves() {
 
-        if (this.cursors.space.isDown) {
+        if (window.gameFireMove() || this.cursors.space.isDown) {
             this.throwKnife()
         } else if (window.gameUpMove() || this.cursors.up.isDown) {
             this.player.setVelocity(0, -playerSpeed)
