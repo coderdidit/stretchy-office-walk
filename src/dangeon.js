@@ -4,6 +4,7 @@ import fauneJsonPath from './vendor/assets/sprites/faune.json'
 import dangeonPngPath from './vendor/assets/tilemaps/dangeon.png'
 import dangeonJsonPath from './vendor/assets/tilemaps/dangeon.json'
 import knifePath from './vendor/assets/weapons/weapon_knife.png'
+import chestPath from './vendor/assets/tiles/chest.png'
 import { debugCollisonBounds } from './utils/debugger'
 
 
@@ -22,6 +23,7 @@ class DangeonStretchGame extends Phaser.Scene {
         this.load.tilemapTiledJSON('dangeon', dangeonJsonPath)
         this.load.atlas('faune', faunePngPath, fauneJsonPath)
         this.load.image('knife', knifePath)
+        this.load.image('chest', chestPath)
     }
 
     create() {
@@ -40,6 +42,16 @@ class DangeonStretchGame extends Phaser.Scene {
 
         this.wallsLayer.setCollisionByProperty({
             collides: true
+        })
+
+        const treasuresGroup = this.physics.add.staticGroup()
+        const treasuresLayer = map.getObjectLayer('treasures')
+        treasuresLayer.objects.forEach(co => {
+            const x = co.x * mapScale
+            const y = co.y * mapScale
+            treasuresGroup
+                .get(x + co.width * 1.3, y - co.height * 1.6, 'chest')
+                .setScale(mapScale)
         })
 
         // debugging
