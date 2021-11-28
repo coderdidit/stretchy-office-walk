@@ -55252,7 +55252,7 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 
 var BLAZEPOSE_CONFIG = {
   maxPoses: 1,
-  scoreThreshold: 0.65,
+  scoreThreshold: 0.9,
   runtime: 'mediapipe',
   modelType: 'full',
   solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/pose@".concat(mpPose.VERSION),
@@ -55519,7 +55519,6 @@ var Camera = /*#__PURE__*/function () {
     value: function drawSkeleton(keypoints) {
       var _this = this;
 
-      var color = "blue";
       this.ctx.lineWidth = params.DEFAULT_LINE_WIDTH;
       posedetection.util.getAdjacentPairs(params.PoseDetectionCfg.model).forEach(function (_ref) {
         var _ref2 = _slicedToArray(_ref, 2),
@@ -55528,8 +55527,11 @@ var Camera = /*#__PURE__*/function () {
 
         var kp1 = keypoints[i];
         var kp2 = keypoints[j];
+        var color = "blue";
 
-        if (kp1.name.endsWith("shoulder") && kp2.name.endsWith("elbow") && window.gameUpMove()) {
+        if (kp1.name == "left_shoulder" && kp2.name == "left_elbow" && window.gameUpMove()) {
+          color = "red";
+        } else if (kp1.name == "right_shoulder" && kp2.name == "right_elbow" && window.gameDownMove()) {
           color = "red";
         }
 
@@ -67800,13 +67802,10 @@ var handlePoseToGameEvents = function handlePoseToGameEvents(pose) {
   var leftElbow = poseKeypoints[14];
   var rightElbow = poseKeypoints[13];
   var leftElbowToSholder = (0, _angles.getAngleBetween)(leftShoulder, leftElbow);
-  var rightElbowToSholder = (0, _angles.getAngleBetween)(rightShoulder, rightElbow); // arms and elbows
-  // const bothArmsUp = (leftElbowToSholder > angle)
-  //     && (rightElbowToSholder > angle)
-
+  var rightElbowToSholder = (0, _angles.getAngleBetween)(rightShoulder, rightElbow);
   var angle = 45;
-  var moveUp = leftElbowToSholder > angle;
-  var moveDown = rightElbowToSholder > angle;
+  var moveDown = leftElbowToSholder > angle && rightElbowToSholder < angle;
+  var moveUp = rightElbowToSholder > angle && leftElbowToSholder < angle;
   var noseToLeftEyeYdistance = nose.y - leftEye.y;
   var noseToRightEyeYdistance = nose.y - rightEye.y; // vissibility
 
@@ -67814,11 +67813,8 @@ var handlePoseToGameEvents = function handlePoseToGameEvents(pose) {
   var noseVissible = nose.score > scoreThreshold;
   var lEVissible = leftEye.score > scoreThreshold;
   var REVissible = rightEye.score > scoreThreshold;
-  var lShoulderVissible = leftShoulder.score > scoreThreshold;
-  var rShoulderVissible = rightShoulder.score > scoreThreshold;
   var lElbowVissible = leftElbow.score > scoreThreshold;
   var rElbowVissible = rightElbow.score > scoreThreshold;
-  var shouldersVisible = lShoulderVissible && rShoulderVissible;
   var visibleShoulders = 0;
 
   if (lElbowVissible) {
@@ -67829,7 +67825,6 @@ var handlePoseToGameEvents = function handlePoseToGameEvents(pose) {
     visibleShoulders += 1;
   }
 
-  var shouldersAndElbowsVissible = shouldersVisible && visibleShoulders == 2;
   var moveSideActivationDist = 8;
 
   if (noseVissible && lEVissible && noseToLeftEyeYdistance < moveSideActivationDist) {
@@ -67843,7 +67838,6 @@ var handlePoseToGameEvents = function handlePoseToGameEvents(pose) {
     movedUp = false;
     return _gameState.down;
   } else {
-    movedUp = false;
     return _gameState.stop;
   }
 }; // fps for predictions
@@ -67940,7 +67934,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50273" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61613" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
