@@ -3,7 +3,7 @@ import faunePngPath from './vendor/assets/sprites/faune.png'
 import fauneJsonPath from './vendor/assets/sprites/faune.json'
 import dangeonPngPath from './vendor/assets/tilemaps/dangeon.png'
 import dangeonJsonPath from './vendor/assets/tilemaps/dangeon.json'
-import {debugCollisonBounds} from './utils/debugger'
+import { debugCollisonBounds } from './utils/debugger'
 
 
 const playerSpeed = 100
@@ -44,7 +44,7 @@ class DangeonStretchGame extends Phaser.Scene {
         if (debug) {
             debugCollisonBounds(this.wallsLayer, this)
         }
-        
+
         this.cursors = this.input.keyboard.createCursorKeys();
 
         // player setup
@@ -56,7 +56,7 @@ class DangeonStretchGame extends Phaser.Scene {
             'run-down-1.png'
         );
         this.player.setScale(playerScale)
-        
+
         // adjust collision box
         this.player.body.setSize(
             this.player.width * 0.5,
