@@ -51,7 +51,6 @@ class DangeonStretchGame extends Phaser.Scene {
 
         this.knives = this.physics.add.group({
             classType: Phaser.Physics.Arcade.Image,
-            maxSize: 3
         })
 
         // player setup
@@ -134,19 +133,52 @@ class DangeonStretchGame extends Phaser.Scene {
         this.handlePlayerMoves()
     }
 
+    getPlayerDirection() {
+        return this.player.anims.currentAnim.key
+            .split('-')[2]
+    }
+
+    throwKnife() {
+        const knifeSpeed = 300
+        const knife = this.knives.get(this.player.x, this.player.y, 'knife')
+        knife.setScale(1.2)
+        if (knife) {
+            const direction = this.getPlayerDirection()
+            const vec = new Phaser.Math.Vector2(0, 0)
+
+            switch (direction) {
+                case 'up':
+                    vec.y = -1
+                    break
+
+                case 'down':
+                    vec.y = 1
+                    break
+
+                default:
+                case 'side':
+                    if (this.player.flipX) {
+                        vec.x = -1
+                    }
+                    else {
+                        vec.x = 1
+                    }
+                    break
+            }
+            const angle = vec.angle()
+
+            knife.setActive(true)
+            knife.setVisible(true)
+            knife.setRotation(angle)
+            knife.setVelocity(vec.x * knifeSpeed, vec.y * knifeSpeed)
+        }
+    }
+
     handlePlayerMoves() {
 
         if (this.cursors.space.isDown) {
-            // throw knife
-            const knife = this.knives.get(this.player.x, this.player.y, 'knife')
-            if (knife) {
-                knife.setActive(true)
-                knife.setVisible(true)
-                knife.setVelocity(300, 300)
-            }
-        }
-
-        if (window.gameUpMove() || this.cursors.up.isDown) {
+            this.throwKnife()
+        } else if (window.gameUpMove() || this.cursors.up.isDown) {
             this.player.setVelocity(0, -playerSpeed)
             this.player.anims.play('faune-run-up', true)
         } else if (window.gameDownMove() || this.cursors.down.isDown) {
@@ -162,8 +194,7 @@ class DangeonStretchGame extends Phaser.Scene {
             this.player.setFlipX(false)
         } else {
             // idle
-            const direction = this.player.anims.currentAnim.key
-                .split('-')[2]
+            const direction = this.getPlayerDirection()
             this.player.setVelocity(0, 0)
             this.player.anims.play(`faune-idle-${direction}`, true)
         }
