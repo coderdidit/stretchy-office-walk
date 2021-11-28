@@ -67524,7 +67524,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = updatePlayerStats;
-exports.handleMoveToEvent = exports.stop = exports.down = exports.jump = exports.up = exports.right = exports.left = void 0;
+exports.handleMoveToEvent = exports.fire = exports.stop = exports.down = exports.jump = exports.up = exports.right = exports.left = void 0;
 var play = "play";
 var move = "move";
 var left = "left";
@@ -67539,11 +67539,15 @@ var down = "down";
 exports.down = down;
 var stop = "stop";
 exports.stop = stop;
+var fire = "fire";
+exports.fire = fire;
 var prevState = stop;
 var lastTimeChangeToStop = Date.now();
 
 var handleMoveToEvent = function handleMoveToEvent(move) {
-  if (move == left) {
+  if (move == fire) {
+    window.gameStateFire();
+  } else if (move == left) {
     window.gameStateMoveLeft();
   } else if (move == right) {
     window.gameStateMoveRight();
@@ -67560,6 +67564,10 @@ exports.handleMoveToEvent = handleMoveToEvent;
 
 window.gameStateInit = function () {
   window.gameState = stop;
+};
+
+window.gameFireMove = function () {
+  return window.gameState == fire;
 };
 
 window.gameLeftMove = function () {
@@ -67585,6 +67593,11 @@ window.gameDownMove = function () {
 window.gameStateMove = function () {
   prevState = window.gameState;
   window.gameState = move;
+};
+
+window.gameStateFire = function () {
+  prevState = window.gameState;
+  window.gameState = fire;
 };
 
 window.gameStateMoveLeft = function () {
@@ -67800,12 +67813,14 @@ var handlePoseToGameEvents = function handlePoseToGameEvents(pose) {
   var leftShoulder = poseKeypoints[12];
   var rightShoulder = poseKeypoints[11];
   var leftElbow = poseKeypoints[14];
-  var rightElbow = poseKeypoints[13];
-  var leftElbowToSholder = (0, _angles.getAngleBetween)(leftShoulder, leftElbow);
+  var rightElbow = poseKeypoints[13]; // TODO investigate more how this logic works in terms of flipping
+
+  var leftElbowToSholder = (0, _angles.getAngleBetween)(leftElbow, leftShoulder) * -1;
   var rightElbowToSholder = (0, _angles.getAngleBetween)(rightShoulder, rightElbow);
-  var angle = 45;
-  var moveDown = leftElbowToSholder > angle && rightElbowToSholder < angle;
-  var moveUp = rightElbowToSholder > angle && leftElbowToSholder < angle;
+  var angle = 52;
+  var bothArmsUp = leftElbowToSholder > angle && rightElbowToSholder > angle;
+  var moveDown = leftElbowToSholder > angle && rightElbowToSholder < angle && !bothArmsUp;
+  var moveUp = rightElbowToSholder > angle && leftElbowToSholder < angle && !bothArmsUp;
   var noseToLeftEyeYdistance = nose.y - leftEye.y;
   var noseToRightEyeYdistance = nose.y - rightEye.y; // vissibility
 
@@ -67815,6 +67830,9 @@ var handlePoseToGameEvents = function handlePoseToGameEvents(pose) {
   var REVissible = rightEye.score > scoreThreshold;
   var lElbowVissible = leftElbow.score > scoreThreshold;
   var rElbowVissible = rightElbow.score > scoreThreshold;
+  var lShoulderVissible = leftShoulder.score > scoreThreshold;
+  var rShoulderVissible = rightShoulder.score > scoreThreshold;
+  var shouldersVisible = lShoulderVissible && rShoulderVissible;
   var visibleShoulders = 0;
 
   if (lElbowVissible) {
@@ -67825,9 +67843,12 @@ var handlePoseToGameEvents = function handlePoseToGameEvents(pose) {
     visibleShoulders += 1;
   }
 
+  var shouldersAndElbowsVissible = shouldersVisible && visibleShoulders == 2;
   var moveSideActivationDist = 8;
 
-  if (noseVissible && lEVissible && noseToLeftEyeYdistance < moveSideActivationDist) {
+  if (shouldersAndElbowsVissible && bothArmsUp) {
+    return _gameState.fire;
+  } else if (noseVissible && lEVissible && noseToLeftEyeYdistance < moveSideActivationDist) {
     return _gameState.left;
   } else if (noseVissible && REVissible && noseToRightEyeYdistance < moveSideActivationDist) {
     return _gameState.right;
@@ -67934,7 +67955,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63600" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49332" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

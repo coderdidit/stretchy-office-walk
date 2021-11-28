@@ -124,7 +124,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = updatePlayerStats;
-exports.handleMoveToEvent = exports.stop = exports.down = exports.jump = exports.up = exports.right = exports.left = void 0;
+exports.handleMoveToEvent = exports.fire = exports.stop = exports.down = exports.jump = exports.up = exports.right = exports.left = void 0;
 var play = "play";
 var move = "move";
 var left = "left";
@@ -139,11 +139,15 @@ var down = "down";
 exports.down = down;
 var stop = "stop";
 exports.stop = stop;
+var fire = "fire";
+exports.fire = fire;
 var prevState = stop;
 var lastTimeChangeToStop = Date.now();
 
 var handleMoveToEvent = function handleMoveToEvent(move) {
-  if (move == left) {
+  if (move == fire) {
+    window.gameStateFire();
+  } else if (move == left) {
     window.gameStateMoveLeft();
   } else if (move == right) {
     window.gameStateMoveRight();
@@ -160,6 +164,10 @@ exports.handleMoveToEvent = handleMoveToEvent;
 
 window.gameStateInit = function () {
   window.gameState = stop;
+};
+
+window.gameFireMove = function () {
+  return window.gameState == fire;
 };
 
 window.gameLeftMove = function () {
@@ -185,6 +193,11 @@ window.gameDownMove = function () {
 window.gameStateMove = function () {
   prevState = window.gameState;
   window.gameState = move;
+};
+
+window.gameStateFire = function () {
+  prevState = window.gameState;
+  window.gameState = fire;
 };
 
 window.gameStateMoveLeft = function () {
@@ -292,7 +305,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63600" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49332" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
