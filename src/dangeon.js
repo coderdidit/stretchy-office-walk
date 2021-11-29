@@ -4,9 +4,13 @@ import fauneJsonPath from './vendor/assets/sprites/faune.json'
 import dangeonPngPath from './vendor/assets/tilemaps/dangeon.png'
 import dangeonJsonPath from './vendor/assets/tilemaps/dangeon.json'
 import knifePath from './vendor/assets/weapons/weapon_knife.png'
+import treasurePngPath from './vendor/assets/treasure/treasure.png'
+import treasureJsonPath from './vendor/assets/treasure/treasure.json'
 import { debugCollisonBounds } from './utils/debugger'
+import party from "party-js"
 
 
+const canvasParent = document.getElementById('main-canvas')
 const playerSpeed = 100
 const playerScale = 2
 const mapScale = 3
@@ -22,9 +26,11 @@ class DangeonStretchGame extends Phaser.Scene {
         this.load.tilemapTiledJSON('dangeon', dangeonJsonPath)
         this.load.atlas('faune', faunePngPath, fauneJsonPath)
         this.load.image('knife', knifePath)
+        this.load.atlas('treasure', treasurePngPath, treasureJsonPath)
     }
 
     create() {
+        this.coins = 0
         // map [background]
         const map = this.make.tilemap({ key: 'dangeon' })
         const tileset = map.addTilesetImage('dangeon', 'tiles')
@@ -40,6 +46,24 @@ class DangeonStretchGame extends Phaser.Scene {
 
         this.wallsLayer.setCollisionByProperty({
             collides: true
+        })
+
+        const treasuresGroup = this.physics.add.staticGroup()
+        const treasuresLayer = map.getObjectLayer('treasures')
+        treasuresLayer.objects.forEach((co, idx) => {
+            const x = co.x * mapScale
+            const y = co.y * mapScale
+            treasuresGroup
+                .get(x + co.width * 1.4, y - co.height * 1.55,
+                    'treasure')
+                .setScale(mapScale)
+                .setName(idx)
+        })
+        // treasure anims
+        this.anims.create({
+            key: 'chest-open',
+            frames: this.anims.generateFrameNames('treasure', { start: 0, end: 2, prefix: 'chest_empty_open_anim_f', suffix: '.png' }),
+            frameRate: 15
         })
 
         // debugging
@@ -73,7 +97,26 @@ class DangeonStretchGame extends Phaser.Scene {
         this.player.anims.play('faune-idle-down', true)
         this.physics.add.collider(this.player, this.wallsLayer)
         this.physics.add.collider(this.knives, this.wallsLayer)
+        const openedTreasures = new Set()
+        this.physics.add.collider(this.player, treasuresGroup, (avatar, treasure) => {
+            if (!openedTreasures.has(treasure.name)) {
+                treasure.play('chest-open')
+                this.coins += Phaser.Math.Between(5, 100)
+                scoreText.setText(`💰: ${this.coins}`)
+                party.confetti(canvasParent)
+                openedTreasures.add(treasure.name)
+            }
+        })
         this.cameras.main.startFollow(this.player);
+
+        const textStyle = {
+            fontSize: '26px',
+            fill: '#fff',
+            fontFamily: 'Orbitron'
+        }
+        const scoreText = this.add
+            .text(5, 5, `💰: ${this.coins}`, textStyle)
+            .setScrollFactor(0, 0)
     }
 
     createPlayerAnims(player, fauneKey) {
