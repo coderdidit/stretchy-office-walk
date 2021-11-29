@@ -111,9 +111,9 @@ class DangeonStretchGame extends Phaser.Scene {
             fill: '#fff',
             fontFamily: 'Orbitron'
         }
-        const scoreText = this.add.text(5, 5, `💰: ${this.coins}`, textStyle)
-        scoreText.scrollFactorX = 0
-        scoreText.scrollFactorY = 0
+        const scoreText = this.add
+            .text(5, 5, `💰: ${this.coins}`, textStyle)
+            .setScrollFactor(0, 0)
     }
 
     createPlayerAnims(player, fauneKey) {
