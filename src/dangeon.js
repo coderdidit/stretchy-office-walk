@@ -6,14 +6,12 @@ import dangeonJsonPath from './vendor/assets/tilemaps/dangeon.json'
 import knifePath from './vendor/assets/weapons/weapon_knife.png'
 import chestPath from './vendor/assets/tiles/chest.png'
 import { debugCollisonBounds } from './utils/debugger'
-import party from "party-js"
 
 
 const playerSpeed = 100
 const playerScale = 2
 const mapScale = 3
 const debug = false
-const canvasParent = document.getElementById('main-canvas')
 
 class DangeonStretchGame extends Phaser.Scene {
     constructor() {
@@ -89,7 +87,6 @@ class DangeonStretchGame extends Phaser.Scene {
         this.physics.add.collider(this.knives, this.wallsLayer)
         this.physics.add.overlap(this.player, treasuresGroup, (avatar, treasure) => {
             treasure.destroy()
-            party.confetti(canvasParent)
         })
         this.cameras.main.startFollow(this.player);
     }
