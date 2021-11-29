@@ -7,8 +7,10 @@ import knifePath from './vendor/assets/weapons/weapon_knife.png'
 import treasurePngPath from './vendor/assets/treasure/treasure.png'
 import treasureJsonPath from './vendor/assets/treasure/treasure.json'
 import { debugCollisonBounds } from './utils/debugger'
+import party from "party-js"
 
 
+const canvasParent = document.getElementById('main-canvas')
 const playerSpeed = 100
 const playerScale = 2
 const mapScale = 3
@@ -101,6 +103,7 @@ class DangeonStretchGame extends Phaser.Scene {
                 treasure.play('chest-open')
                 this.coins += Phaser.Math.Between(5, 100)
                 scoreText.setText(`💰: ${this.coins}`)
+                party.confetti(canvasParent)
                 openedTreasures.add(treasure.name)
             }
         })
