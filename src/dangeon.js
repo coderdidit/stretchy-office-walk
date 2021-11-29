@@ -4,7 +4,6 @@ import fauneJsonPath from './vendor/assets/sprites/faune.json'
 import dangeonPngPath from './vendor/assets/tilemaps/dangeon.png'
 import dangeonJsonPath from './vendor/assets/tilemaps/dangeon.json'
 import knifePath from './vendor/assets/weapons/weapon_knife.png'
-import chestPath from './vendor/assets/tiles/chest.png'
 import treasurePngPath from './vendor/assets/treasure/treasure.png'
 import treasureJsonPath from './vendor/assets/treasure/treasure.json'
 import { debugCollisonBounds } from './utils/debugger'
@@ -26,7 +25,6 @@ class DangeonStretchGame extends Phaser.Scene {
         this.load.atlas('faune', faunePngPath, fauneJsonPath)
         this.load.image('knife', knifePath)
         this.load.atlas('treasure', treasurePngPath, treasureJsonPath)
-        this.load.image('treasure', chestPath)
     }
 
     create() {
@@ -53,7 +51,8 @@ class DangeonStretchGame extends Phaser.Scene {
             const x = co.x * mapScale
             const y = co.y * mapScale
             treasuresGroup
-                .get(x + co.width * 1.4, y - co.height * 1.55, 'treasure')
+                .get(x + co.width * 1.4, y - co.height * 1.55, 
+                    'treasure')
                 .setScale(mapScale)
         })
         // treasure anims
