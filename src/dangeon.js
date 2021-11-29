@@ -5,6 +5,8 @@ import dangeonPngPath from './vendor/assets/tilemaps/dangeon.png'
 import dangeonJsonPath from './vendor/assets/tilemaps/dangeon.json'
 import knifePath from './vendor/assets/weapons/weapon_knife.png'
 import chestPath from './vendor/assets/tiles/chest.png'
+import treasurePngPath from './vendor/assets/treasure/treasure.png'
+import treasureJsonPath from './vendor/assets/treasure/treasure.json'
 import { debugCollisonBounds } from './utils/debugger'
 
 
@@ -23,7 +25,8 @@ class DangeonStretchGame extends Phaser.Scene {
         this.load.tilemapTiledJSON('dangeon', dangeonJsonPath)
         this.load.atlas('faune', faunePngPath, fauneJsonPath)
         this.load.image('knife', knifePath)
-        this.load.image('chest', chestPath)
+        this.load.atlas('treasure', treasurePngPath, treasureJsonPath)
+        this.load.image('treasure', chestPath)
     }
 
     create() {
@@ -50,8 +53,14 @@ class DangeonStretchGame extends Phaser.Scene {
             const x = co.x * mapScale
             const y = co.y * mapScale
             treasuresGroup
-                .get(x + co.width * 1.4, y - co.height * 1.55, 'chest')
+                .get(x + co.width * 1.4, y - co.height * 1.55, 'treasure')
                 .setScale(mapScale)
+        })
+        // treasure anims
+        this.anims.create({
+            key: 'chest-open',
+            frames: this.anims.generateFrameNames('treasure', { start: 0, end: 2, prefix: 'chest_empty_open_anim_f', suffix: '.png' }),
+            frameRate: 15
         })
 
         // debugging
@@ -85,8 +94,8 @@ class DangeonStretchGame extends Phaser.Scene {
         this.player.anims.play('faune-idle-down', true)
         this.physics.add.collider(this.player, this.wallsLayer)
         this.physics.add.collider(this.knives, this.wallsLayer)
-        this.physics.add.overlap(this.player, treasuresGroup, (avatar, treasure) => {
-            treasure.destroy()
+        this.physics.add.collider(this.player, treasuresGroup, (avatar, treasure) => {
+            treasure.play('chest-open')
         })
         this.cameras.main.startFollow(this.player);
     }
