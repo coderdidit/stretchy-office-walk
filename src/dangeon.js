@@ -100,10 +100,20 @@ class DangeonStretchGame extends Phaser.Scene {
             if (!openedTreasures.has(treasure.name)) {
                 treasure.play('chest-open')
                 this.coins += Phaser.Math.Between(5, 100)
+                scoreText.setText(`💰: ${this.coins}`)
                 openedTreasures.add(treasure.name)
             }
         })
         this.cameras.main.startFollow(this.player);
+
+        const textStyle = {
+            fontSize: '26px',
+            fill: '#fff',
+            fontFamily: 'Orbitron'
+        }
+        const scoreText = this.add.text(5, 5, `💰: ${this.coins}`, textStyle)
+        scoreText.scrollFactorX = 0
+        scoreText.scrollFactorY = 0
     }
 
     createPlayerAnims(player, fauneKey) {
