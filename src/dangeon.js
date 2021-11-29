@@ -28,6 +28,7 @@ class DangeonStretchGame extends Phaser.Scene {
     }
 
     create() {
+        this.coins = 0
         // map [background]
         const map = this.make.tilemap({ key: 'dangeon' })
         const tileset = map.addTilesetImage('dangeon', 'tiles')
@@ -47,13 +48,14 @@ class DangeonStretchGame extends Phaser.Scene {
 
         const treasuresGroup = this.physics.add.staticGroup()
         const treasuresLayer = map.getObjectLayer('treasures')
-        treasuresLayer.objects.forEach(co => {
+        treasuresLayer.objects.forEach((co, idx) => {
             const x = co.x * mapScale
             const y = co.y * mapScale
             treasuresGroup
-                .get(x + co.width * 1.4, y - co.height * 1.55, 
+                .get(x + co.width * 1.4, y - co.height * 1.55,
                     'treasure')
                 .setScale(mapScale)
+                .setName(idx)
         })
         // treasure anims
         this.anims.create({
@@ -93,8 +95,13 @@ class DangeonStretchGame extends Phaser.Scene {
         this.player.anims.play('faune-idle-down', true)
         this.physics.add.collider(this.player, this.wallsLayer)
         this.physics.add.collider(this.knives, this.wallsLayer)
+        const openedTreasures = new Set()
         this.physics.add.collider(this.player, treasuresGroup, (avatar, treasure) => {
-            treasure.play('chest-open')
+            if (!openedTreasures.has(treasure.name)) {
+                treasure.play('chest-open')
+                this.coins += Phaser.Math.Between(5, 100)
+                openedTreasures.add(treasure.name)
+            }
         })
         this.cameras.main.startFollow(this.player);
     }
