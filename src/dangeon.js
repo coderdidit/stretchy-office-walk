@@ -17,6 +17,8 @@ const playerSpeed = 100
 const playerScale = 2
 const mapScale = 3
 const debug = false
+const fauneKey = 'faune'
+const lizardKey = 'lizard'
 
 class DangeonStretchGame extends Phaser.Scene {
     constructor() {
@@ -26,8 +28,8 @@ class DangeonStretchGame extends Phaser.Scene {
     preload() {
         this.load.image('tiles', dangeonPngPath)
         this.load.tilemapTiledJSON('dangeon', dangeonJsonPath)
-        this.load.atlas('faune', faunePngPath, fauneJsonPath)
-        this.load.atlas('lizard', lizardPngPath, lizardJsonPath)
+        this.load.atlas(fauneKey, faunePngPath, fauneJsonPath)
+        this.load.atlas(lizardKey, lizardPngPath, lizardJsonPath)
         this.load.image('knife', knifePath)
         this.load.atlas('treasure', treasurePngPath, treasureJsonPath)
     }
@@ -81,7 +83,6 @@ class DangeonStretchGame extends Phaser.Scene {
         })
 
         // player setup
-        const fauneKey = 'faune'
         this.player = this.physics.add.sprite(
             this.physics.world.bounds.width / 2,
             this.physics.world.bounds.height / 2,
@@ -100,9 +101,12 @@ class DangeonStretchGame extends Phaser.Scene {
         this.player.anims.play('faune-idle-down', true)
 
         // enemies
-        const lizardKey = 'lizard'
-        const lizard = this.physics.add.sprite(
+        this.lizards = this.physics.add.group({
+            classType: Phaser.Physics.Arcade.Sprite,
+        })
+        const lizard = this.lizards.get(
             this.player.x + 250, this.player.y + 20, lizardKey)
+        console.log('lizard', lizard)
         lizard.setImmovable(true)
         lizard.setScale(playerScale * 1.25)
         lizard.anims.create({
@@ -122,7 +126,7 @@ class DangeonStretchGame extends Phaser.Scene {
 
         // enemies collider
         this.physics.add.collider(this.player, lizard)
-        this.physics.add.collider(this.knives, lizard, (lizard, knife) => {
+        this.physics.add.collider(this.knives, this.lizards, (lizard, knife) => {
             knife.destroy()
             lizard.destroy()
         })
