@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="43">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="44">
  <editorsettings>
   <export target="dangeon.json" format="json"/>
  </editorsettings>
@@ -5344,32 +5344,30 @@
  </objectgroup>
  <objectgroup id="4" name="lizards">
   <object id="12" gid="425" x="352.976" y="110.981" width="16" height="16"/>
-  <object id="13" gid="425" x="337.257" y="109.897" width="16" height="16"/>
-  <object id="14" gid="425" x="337.257" y="125.615" width="16" height="16"/>
-  <object id="15" gid="425" x="335.631" y="144.585" width="16" height="16"/>
-  <object id="16" gid="425" x="335.631" y="157.593" width="16" height="16"/>
-  <object id="17" gid="425" x="335.631" y="173.312" width="16" height="16"/>
-  <object id="18" gid="425" x="353.518" y="172.228" width="16" height="16"/>
+  <object id="14" gid="425" x="332.921" y="116.943" width="16" height="16"/>
+  <object id="15" gid="425" x="339.425" y="140.791" width="16" height="16"/>
+  <object id="16" gid="425" x="332.921" y="165.182" width="16" height="16"/>
+  <object id="18" gid="425" x="352.434" y="177.106" width="16" height="16"/>
   <object id="19" gid="425" x="319.371" y="299.599" width="16" height="16"/>
   <object id="20" gid="425" x="337.257" y="300.141" width="16" height="16"/>
   <object id="21" gid="425" x="352.976" y="300.141" width="16" height="16"/>
-  <object id="25" gid="425" x="239.154" y="490.385" width="16" height="16"/>
-  <object id="26" gid="425" x="238.07" y="471.957" width="16" height="16"/>
-  <object id="27" gid="425" x="239.696" y="457.864" width="16" height="16"/>
+  <object id="25" gid="425" x="236.986" y="491.469" width="16" height="16"/>
+  <object id="26" gid="425" x="231.566" y="471.957" width="16" height="16"/>
+  <object id="27" gid="425" x="238.07" y="453.528" width="16" height="16"/>
   <object id="28" gid="425" x="257.583" y="457.322" width="16" height="16"/>
-  <object id="29" gid="425" x="272.759" y="457.864" width="16" height="16"/>
+  <object id="29" gid="425" x="274.385" y="451.902" width="16" height="16"/>
   <object id="30" gid="425" x="289.561" y="458.949" width="16" height="16"/>
-  <object id="31" gid="425" x="305.821" y="458.949" width="16" height="16"/>
+  <object id="31" gid="425" x="306.905" y="453.528" width="16" height="16"/>
   <object id="32" gid="425" x="304.737" y="473.041" width="16" height="16"/>
-  <object id="33" gid="425" x="303.653" y="492.011" width="16" height="16"/>
+  <object id="33" gid="425" x="306.905" y="492.011" width="16" height="16"/>
   <object id="34" gid="425" x="589.832" y="316.401" width="16" height="16"/>
-  <object id="35" gid="425" x="608.802" y="297.973" width="16" height="16"/>
-  <object id="36" gid="425" x="626.688" y="283.339" width="16" height="16"/>
-  <object id="37" gid="425" x="640.238" y="266.537" width="16" height="16"/>
-  <object id="38" gid="425" x="110.157" y="334.287" width="16" height="16"/>
-  <object id="39" gid="425" x="125.875" y="318.569" width="16" height="16"/>
+  <object id="35" gid="425" x="606.092" y="294.721" width="16" height="16"/>
+  <object id="36" gid="425" x="626.688" y="276.293" width="16" height="16"/>
+  <object id="37" gid="425" x="648.369" y="263.285" width="16" height="16"/>
+  <object id="38" gid="425" x="103.111" y="335.371" width="16" height="16"/>
+  <object id="39" gid="425" x="127.501" y="325.073" width="16" height="16"/>
   <object id="40" gid="425" x="143.762" y="301.767" width="16" height="16"/>
-  <object id="41" gid="425" x="96.065" y="333.203" width="16" height="16"/>
+  <object id="41" gid="425" x="79.2629" y="335.371" width="16" height="16"/>
   <object id="42" gid="425" x="32.6504" y="186.862" width="16" height="16"/>
  </objectgroup>
 </map>

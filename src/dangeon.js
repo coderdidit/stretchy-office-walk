@@ -114,6 +114,10 @@ class DangeonStretchGame extends Phaser.Scene {
                 .setScale(playerScale * 1.25)
                 .setName(idx)
                 .setImmovable(true)
+            lizard.body.setSize(
+                lizard.width * 0.5,
+                lizard.height * 0.8
+            )
             this.createLizardAnims(lizard)
             lizard.anims.play('lizard-idle')
         })
