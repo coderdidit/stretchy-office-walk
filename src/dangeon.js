@@ -122,6 +122,10 @@ class DangeonStretchGame extends Phaser.Scene {
 
         // enemies collider
         this.physics.add.collider(this.player, lizard)
+        this.physics.add.collider(this.knives, lizard, (lizard, knife) => {
+            knife.destroy()
+            lizard.destroy()
+        })
 
         // treasures collider
         const openedTreasures = new Set()
