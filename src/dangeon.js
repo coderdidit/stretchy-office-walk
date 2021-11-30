@@ -104,20 +104,26 @@ class DangeonStretchGame extends Phaser.Scene {
         this.lizards = this.physics.add.group({
             classType: Phaser.Physics.Arcade.Sprite,
         })
-        const lizard = this.lizards.get(
-            this.player.x + 250, this.player.y + 20, lizardKey)
-        console.log('lizard', lizard)
-        lizard.setImmovable(true)
-        lizard.setScale(playerScale * 1.25)
-        this.createLizardAnims(lizard)
-        lizard.anims.play('lizard-idle')
+        const lizardsLayer = map.getObjectLayer('lizards')
+        lizardsLayer.objects.forEach((co, idx) => {
+            const x = co.x * mapScale
+            const y = co.y * mapScale
+            const lizard = this.lizards
+                .get(x + co.width * 1.4, y - co.height * 1.55,
+                    lizardKey)
+                .setScale(playerScale * 1.25)
+                .setName(idx)
+                .setImmovable(true)
+            this.createLizardAnims(lizard)
+            lizard.anims.play('lizard-idle')
+        })
 
         // world collider
         this.physics.add.collider(this.player, this.wallsLayer)
         this.physics.add.collider(this.knives, this.wallsLayer)
 
         // enemies collider
-        this.physics.add.collider(this.player, lizard)
+        this.physics.add.collider(this.player, this.lizards)
         this.physics.add.collider(this.knives, this.lizards, (lizard, knife) => {
             knife.destroy()
             lizard.destroy()
@@ -154,7 +160,7 @@ class DangeonStretchGame extends Phaser.Scene {
                 { start: 0, end: 3, prefix: 'lizard_m_idle_anim_f', suffix: '.png' },
             ),
             repeat: -1,
-            frameRate: 10
+            frameRate: 5
         })
     }
 
