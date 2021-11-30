@@ -6,6 +6,8 @@ import dangeonJsonPath from './vendor/assets/tilemaps/dangeon.json'
 import knifePath from './vendor/assets/weapons/weapon_knife.png'
 import treasurePngPath from './vendor/assets/treasure/treasure.png'
 import treasureJsonPath from './vendor/assets/treasure/treasure.json'
+import lizardPngPath from './vendor/assets/sprites/lizard.png'
+import lizardJsonPath from './vendor/assets/sprites/lizard.json'
 import { debugCollisonBounds } from './utils/debugger'
 import party from "party-js"
 
@@ -25,6 +27,7 @@ class DangeonStretchGame extends Phaser.Scene {
         this.load.image('tiles', dangeonPngPath)
         this.load.tilemapTiledJSON('dangeon', dangeonJsonPath)
         this.load.atlas('faune', faunePngPath, fauneJsonPath)
+        this.load.atlas('lizard', lizardPngPath, lizardJsonPath)
         this.load.image('knife', knifePath)
         this.load.atlas('treasure', treasurePngPath, treasureJsonPath)
     }
@@ -95,8 +98,32 @@ class DangeonStretchGame extends Phaser.Scene {
 
         this.createPlayerAnims(this.player, fauneKey)
         this.player.anims.play('faune-idle-down', true)
+
+        // enemies
+        const lizardKey = 'lizard'
+        const lizard = this.physics.add.sprite(
+            this.player.x + 250, this.player.y + 20, lizardKey)
+        lizard.setImmovable(true)
+        lizard.setScale(playerScale * 1.25)
+        lizard.anims.create({
+            key: 'lizard-idle',
+            frames: this.anims.generateFrameNames(
+                lizardKey,
+                { start: 0, end: 3, prefix: 'lizard_m_idle_anim_f', suffix: '.png' },
+            ),
+            repeat: -1,
+            frameRate: 10
+        })
+        lizard.anims.play('lizard-idle')
+
+        // world collider
         this.physics.add.collider(this.player, this.wallsLayer)
         this.physics.add.collider(this.knives, this.wallsLayer)
+
+        // enemies collider
+        this.physics.add.collider(this.player, lizard)
+
+        // treasures collider
         const openedTreasures = new Set()
         this.physics.add.collider(this.player, treasuresGroup, (avatar, treasure) => {
             if (!openedTreasures.has(treasure.name)) {
