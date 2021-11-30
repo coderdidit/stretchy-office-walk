@@ -109,15 +109,7 @@ class DangeonStretchGame extends Phaser.Scene {
         console.log('lizard', lizard)
         lizard.setImmovable(true)
         lizard.setScale(playerScale * 1.25)
-        lizard.anims.create({
-            key: 'lizard-idle',
-            frames: this.anims.generateFrameNames(
-                lizardKey,
-                { start: 0, end: 3, prefix: 'lizard_m_idle_anim_f', suffix: '.png' },
-            ),
-            repeat: -1,
-            frameRate: 10
-        })
+        this.createLizardAnims(lizard)
         lizard.anims.play('lizard-idle')
 
         // world collider
@@ -152,6 +144,18 @@ class DangeonStretchGame extends Phaser.Scene {
         const scoreText = this.add
             .text(5, 5, `💰: ${this.coins}`, textStyle)
             .setScrollFactor(0, 0)
+    }
+
+    createLizardAnims(lizard) {
+        lizard.anims.create({
+            key: 'lizard-idle',
+            frames: this.anims.generateFrameNames(
+                lizardKey,
+                { start: 0, end: 3, prefix: 'lizard_m_idle_anim_f', suffix: '.png' },
+            ),
+            repeat: -1,
+            frameRate: 10
+        })
     }
 
     createPlayerAnims(player, fauneKey) {
