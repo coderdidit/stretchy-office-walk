@@ -6,8 +6,11 @@ import dangeonJsonPath from './vendor/assets/tilemaps/dangeon.json'
 import knifePath from './vendor/assets/weapons/weapon_knife.png'
 import treasurePngPath from './vendor/assets/treasure/treasure.png'
 import treasureJsonPath from './vendor/assets/treasure/treasure.json'
+import lizardPngPath from './vendor/assets/sprites/lizard.png'
+import lizardJsonPath from './vendor/assets/sprites/lizard.json'
 import { debugCollisonBounds } from './utils/debugger'
 import party from "party-js"
+import GameOver from "./game-over";
 
 
 const canvasParent = document.getElementById('main-canvas')
@@ -15,6 +18,9 @@ const playerSpeed = 100
 const playerScale = 2
 const mapScale = 3
 const debug = false
+const fauneKey = 'faune'
+const lizardKey = 'lizard'
+
 
 class DangeonStretchGame extends Phaser.Scene {
     constructor() {
@@ -24,13 +30,16 @@ class DangeonStretchGame extends Phaser.Scene {
     preload() {
         this.load.image('tiles', dangeonPngPath)
         this.load.tilemapTiledJSON('dangeon', dangeonJsonPath)
-        this.load.atlas('faune', faunePngPath, fauneJsonPath)
+        this.load.atlas(fauneKey, faunePngPath, fauneJsonPath)
+        this.load.atlas(lizardKey, lizardPngPath, lizardJsonPath)
         this.load.image('knife', knifePath)
         this.load.atlas('treasure', treasurePngPath, treasureJsonPath)
     }
 
     create() {
+        this.endGame = false
         this.coins = 0
+        this.totalCoinsToGather = 0
         // map [background]
         const map = this.make.tilemap({ key: 'dangeon' })
         const tileset = map.addTilesetImage('dangeon', 'tiles')
@@ -50,6 +59,7 @@ class DangeonStretchGame extends Phaser.Scene {
 
         const treasuresGroup = this.physics.add.staticGroup()
         const treasuresLayer = map.getObjectLayer('treasures')
+        const treasureCoins = new Map()
         treasuresLayer.objects.forEach((co, idx) => {
             const x = co.x * mapScale
             const y = co.y * mapScale
@@ -58,6 +68,9 @@ class DangeonStretchGame extends Phaser.Scene {
                     'treasure')
                 .setScale(mapScale)
                 .setName(idx)
+            const treasureCoinsValue = Phaser.Math.Between(5, 100)
+            treasureCoins.set(idx, treasureCoinsValue)
+            this.totalCoinsToGather += treasureCoinsValue
         })
         // treasure anims
         this.anims.create({
@@ -78,7 +91,6 @@ class DangeonStretchGame extends Phaser.Scene {
         })
 
         // player setup
-        const fauneKey = 'faune'
         this.player = this.physics.add.sprite(
             this.physics.world.bounds.width / 2,
             this.physics.world.bounds.height / 2,
@@ -95,13 +107,46 @@ class DangeonStretchGame extends Phaser.Scene {
 
         this.createPlayerAnims(this.player, fauneKey)
         this.player.anims.play('faune-idle-down', true)
+
+        // enemies
+        this.lizards = this.physics.add.group({
+            classType: Phaser.Physics.Arcade.Sprite,
+        })
+        const lizardsLayer = map.getObjectLayer('lizards')
+        lizardsLayer.objects.forEach((co, idx) => {
+            const x = co.x * mapScale
+            const y = co.y * mapScale
+            const lizard = this.lizards
+                .get(x + co.width * 1.4, y - co.height * 1.55,
+                    lizardKey)
+                .setScale(playerScale * 1.25)
+                .setName(idx)
+                .setImmovable(true)
+            lizard.body.setSize(
+                lizard.width * 0.5,
+                lizard.height * 0.8
+            )
+            this.createLizardAnims(lizard)
+            lizard.anims.play('lizard-idle')
+        })
+
+        // world collider
         this.physics.add.collider(this.player, this.wallsLayer)
         this.physics.add.collider(this.knives, this.wallsLayer)
+
+        // enemies collider
+        this.physics.add.collider(this.player, this.lizards)
+        this.physics.add.collider(this.knives, this.lizards, (lizard, knife) => {
+            knife.destroy()
+            lizard.destroy()
+        })
+
+        // treasures collider
         const openedTreasures = new Set()
         this.physics.add.collider(this.player, treasuresGroup, (avatar, treasure) => {
             if (!openedTreasures.has(treasure.name)) {
                 treasure.play('chest-open')
-                this.coins += Phaser.Math.Between(5, 100)
+                this.coins += treasureCoins.get(treasure.name)
                 scoreText.setText(`💰: ${this.coins}`)
                 party.confetti(canvasParent)
                 openedTreasures.add(treasure.name)
@@ -117,6 +162,18 @@ class DangeonStretchGame extends Phaser.Scene {
         const scoreText = this.add
             .text(5, 5, `💰: ${this.coins}`, textStyle)
             .setScrollFactor(0, 0)
+    }
+
+    createLizardAnims(lizard) {
+        lizard.anims.create({
+            key: 'lizard-idle',
+            frames: this.anims.generateFrameNames(
+                lizardKey,
+                { start: 0, end: 3, prefix: 'lizard_m_idle_anim_f', suffix: '.png' },
+            ),
+            repeat: -1,
+            frameRate: 5
+        })
     }
 
     createPlayerAnims(player, fauneKey) {
@@ -173,6 +230,18 @@ class DangeonStretchGame extends Phaser.Scene {
     }
 
     update(time, delta) {
+        if (this.endGame) {
+            this.scene.start('you-won', {
+                msg: "You Won! 🎉 \n" +
+                    `All ${this.coins} 💰 are gathered 😀`,
+                mainScene: 'dangeon-stretch'
+            })
+            return
+        }
+        // check if won
+        if (this.coins === this.totalCoinsToGather) {
+            setTimeout(() => this.endGame = true, 1000)
+        }
         this.handlePlayerMoves()
     }
 
@@ -254,7 +323,7 @@ const config = {
     height: scaleDownSketch ? window.innerHeight / 1.3 : window.innerHeight / 1.2,
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_VERTICALLY,
-    scene: [DangeonStretchGame],
+    scene: [DangeonStretchGame, GameOver],
     audio: {
         noAudio: true
     },

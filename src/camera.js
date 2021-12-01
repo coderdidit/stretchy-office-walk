@@ -211,6 +211,8 @@ export class Camera {
       } else if (kp1.name == "right_shoulder" && kp2.name == "right_elbow"
         && window.gameDownMove()) {
         color = "red"
+      } else if (window.gameFireMove()) {
+        color = "orange"
       }
       if (allowedKeypoints.has(kp1.name) && allowedKeypoints.has(kp2.name)) {
         // If score is null, just show the keypoint.
