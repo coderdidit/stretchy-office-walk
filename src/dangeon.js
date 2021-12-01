@@ -233,7 +233,7 @@ class DangeonStretchGame extends Phaser.Scene {
         if (this.endGame) {
             this.scene.start('you-won', {
                 msg: "You Won! 🎉 \n" +
-                    "All 💰💰💰 are gathered 😀",
+                    `All ${this.coins} 💰 are gathered 😀`,
                 mainScene: 'dangeon-stretch'
             })
             return
