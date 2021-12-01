@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import bgPath from './vendor/assets/images/space.jpeg'
+import spaceBgPath from './vendor/assets/images/space.jpeg'
 import party from "party-js"
 
 
@@ -11,15 +11,17 @@ export default class GameOver extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('bg', bgPath);
+        this.load.image('space', spaceBgPath);
     }
 
-    create() {
+    create(data) {
+        this.msg = data.msg
         this.confettiFiredCount = 0
         const { width, height } = this.physics.world.bounds
 
-        this.bg = this.add.image(width / 2, height / 2, 'bg');
+        this.bg = this.add.image(width / 2, height / 2, data.bg);
         this.bg.setOrigin(0.5)
+        this.bg.setDisplaySize(width, height)
 
         const textStyle = {
             font: 'bold 32px Orbitron',
@@ -31,15 +33,13 @@ export default class GameOver extends Phaser.Scene {
         const infoText = this.add.text(
             width / 2,
             (height / 2) - height * .2,
-            "🚀🚀🚀\n" +
-            "You Won! 🎉 \n" +
-            "All 🪨🪨🪨🪨 are crashed 💥",
+            this.msg,
             textStyle
         )
         infoText.setOrigin(0.5)
         infoText.setShadow(3, 3, 'rgba(0,0,0,0.2)', 2)
 
-        this.input.on("pointerdown", () => this.scene.start('space-stretch'))
+        this.input.on("pointerdown", () => this.scene.start(data.mainScene))
 
         const restartTextStyle = {
             font: 'bold 32px Orbitron',

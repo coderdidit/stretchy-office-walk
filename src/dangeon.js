@@ -10,6 +10,7 @@ import lizardPngPath from './vendor/assets/sprites/lizard.png'
 import lizardJsonPath from './vendor/assets/sprites/lizard.json'
 import { debugCollisonBounds } from './utils/debugger'
 import party from "party-js"
+import GameOver from "./game-over";
 
 
 const canvasParent = document.getElementById('main-canvas')
@@ -19,6 +20,7 @@ const mapScale = 3
 const debug = false
 const fauneKey = 'faune'
 const lizardKey = 'lizard'
+
 
 class DangeonStretchGame extends Phaser.Scene {
     constructor() {
@@ -35,7 +37,9 @@ class DangeonStretchGame extends Phaser.Scene {
     }
 
     create() {
+        this.endGame = false
         this.coins = 0
+        this.totalCoinsToGather = 0
         // map [background]
         const map = this.make.tilemap({ key: 'dangeon' })
         const tileset = map.addTilesetImage('dangeon', 'tiles')
@@ -55,6 +59,7 @@ class DangeonStretchGame extends Phaser.Scene {
 
         const treasuresGroup = this.physics.add.staticGroup()
         const treasuresLayer = map.getObjectLayer('treasures')
+        const treasureCoins = new Map()
         treasuresLayer.objects.forEach((co, idx) => {
             const x = co.x * mapScale
             const y = co.y * mapScale
@@ -63,6 +68,9 @@ class DangeonStretchGame extends Phaser.Scene {
                     'treasure')
                 .setScale(mapScale)
                 .setName(idx)
+            const treasureCoinsValue = Phaser.Math.Between(5, 100)
+            treasureCoins.set(idx, treasureCoinsValue)
+            this.totalCoinsToGather += treasureCoinsValue
         })
         // treasure anims
         this.anims.create({
@@ -138,7 +146,7 @@ class DangeonStretchGame extends Phaser.Scene {
         this.physics.add.collider(this.player, treasuresGroup, (avatar, treasure) => {
             if (!openedTreasures.has(treasure.name)) {
                 treasure.play('chest-open')
-                this.coins += Phaser.Math.Between(5, 100)
+                this.coins += treasureCoins.get(treasure.name)
                 scoreText.setText(`💰: ${this.coins}`)
                 party.confetti(canvasParent)
                 openedTreasures.add(treasure.name)
@@ -222,6 +230,18 @@ class DangeonStretchGame extends Phaser.Scene {
     }
 
     update(time, delta) {
+        if (this.endGame) {
+            this.scene.start('you-won', {
+                msg: "You Won! 🎉 \n" +
+                    "All 💰💰💰 are gathered 😀",
+                mainScene: 'dangeon-stretch'
+            })
+            return
+        }
+        // check if won
+        if (this.coins === this.totalCoinsToGather) {
+            setTimeout(() => this.endGame = true, 1000)
+        }
         this.handlePlayerMoves()
     }
 
@@ -303,7 +323,7 @@ const config = {
     height: scaleDownSketch ? window.innerHeight / 1.3 : window.innerHeight / 1.2,
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_VERTICALLY,
-    scene: [DangeonStretchGame],
+    scene: [DangeonStretchGame, GameOver],
     audio: {
         noAudio: true
     },
